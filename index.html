@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CyberExam — Network Security Platform</title>
+        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --bg: #05070e;
+                --bg-2: #0a0e1a;
+                --card: #0f1424;
+                --card-2: #141a2e;
+                --border: #1d2845;
+                --border-2: #2a3a5f;
+                --accent: #00d4ff;
+                --accent-2: #00ffa3;
+                --purple: #a855f7;
+                --neon-green: #39ff88;
+                --neon-blue: #2de2ff;
+                --neon-purple: #b678ff;
+                --text: #e2e8f0;
+                --text-dim: #94a3b8;
+                --text-muted: #64748b;
+                --danger: #ff3b6b;
+                --warning: #fbbf24;
+                --success: #10b981;
+                --green-bg: rgba(57,255,136,.1);
+                --green-bd: rgba(57,255,136,.4);
+                --red-bg: rgba(255,59,107,.1);
+                --red-bd: rgba(255,59,107,.4);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html, body {
+                height: 100%;
+            }
+
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: 'DM Sans',sans-serif;
+                font-size: 15px;
+                line-height: 1.65;
+                overflow-x: hidden;
+                min-height: 100vh;
+            }
+
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background-image: linear-gradient(rgba(0,212,255,0.035) 1px,transparent 1px), linear-gradient(90deg,rgba(0,212,255,0.035) 1px,transparent 1px);
+                background-size: 56px 56px;
+                pointer-events: none;
+                z-index: 0;
+                mask-image: radial-gradient(ellipse at center,#000 0%,transparent 75%);
+                -webkit-mask-image: radial-gradient(ellipse at center,#000 0%,transparent 75%);
+            }
+
+            body::after {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background: radial-gradient(ellipse 60% 40% at 15% 10%,rgba(45,226,255,.08),transparent 60%), radial-gradient(ellipse 60% 40% at 85% 90%,rgba(182,120,255,.08),transparent 60%), radial-gradient(ellipse 40% 30% at 50% 50%,rgba(57,255,136,.04),transparent 60%);
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            ::-webkit-scrollbar {
+                width: 10px;
+                height: 10px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #0a0e1a;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg,#1d2845,#2a3a5f);
+                border-radius: 8px;
+            }
+
+            .screen {
+                position: relative;
+                z-index: 1;
+                min-height: 100vh;
+                display: none;
+                animation: fadeIn .5s ease;
+            }
+
+            .screen.active {
+                display: block;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(8px)
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0)
+                }
+            }
+
+            @keyframes slideUpCard {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px)
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0)
+                }
+            }
+
+            /* ========== BUTTONS ========== */
+            .btn {
+                appearance: none;
+                border: none;
+                cursor: pointer;
+                font: 600 14px 'DM Sans',sans-serif;
+                letter-spacing: .02em;
+                padding: 14px 22px;
+                border-radius: 10px;
+                transition: transform .15s,box-shadow .2s,filter .2s;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .btn:active {
+                transform: translateY(1px);
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg,var(--neon-blue) 0%,var(--accent) 60%,var(--neon-purple) 120%);
+                color: #061018;
+                font-weight: 700;
+                box-shadow: 0 10px 30px -8px rgba(45,226,255,.35),0 0 0 1px rgba(45,226,255,.3) inset;
+            }
+
+            .btn-primary:hover {
+                filter: brightness(1.1);
+                box-shadow: 0 14px 38px -8px rgba(45,226,255,.5);
+            }
+
+            .btn-ghost {
+                background: rgba(255,255,255,.03);
+                color: var(--text);
+                border: 1px solid var(--border);
+            }
+
+            .btn-ghost:hover {
+                background: rgba(255,255,255,.06);
+                border-color: var(--border-2);
+            }
+
+            .btn-danger {
+                background: var(--red-bg);
+                color: var(--danger);
+                border: 1px solid var(--red-bd);
+            }
+
+            /* ========== LANDING ========== */
+            .landing {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 32px 20px;
+            }
+
+            .landing-box {
+                width: 100%;
+                max-width: 560px;
+                background: linear-gradient(180deg,var(--card) 0%,var(--card-2) 100%);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                padding: 44px 40px 36px;
+                box-shadow: 0 30px 80px -20px rgba(0,0,0,.6),0 0 0 1px rgba(45,226,255,.04) inset;
+            }
+
+            .logo {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 6px 14px;
+                border-radius: 100px;
+                background: rgba(45,226,255,.08);
+                border: 1px solid rgba(45,226,255,.25);
+                color: var(--neon-blue);
+                font-family: 'DM Mono',monospace;
+                font-size: 11px;
+                letter-spacing: .22em;
+                text-transform: uppercase;
+                margin-bottom: 22px;
+            }
+
+            .landing h1 {
+                font-family: 'Syne',sans-serif;
+                font-weight: 800;
+                font-size: clamp(30px,5.2vw,44px);
+                line-height: 1.08;
+                margin-bottom: 14px;
+                background: linear-gradient(135deg,#fff 30%,var(--neon-blue) 75%,var(--neon-purple) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .field {
+                display: grid;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .field label {
+                font-family: 'DM Mono',monospace;
+                font-size: 11px;
+                letter-spacing: .18em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+            }
+
+            .field input {
+                background: #0a0f1e;
+                border: 1px solid var(--border);
+                color: var(--text);
+                padding: 14px 16px;
+                border-radius: 10px;
+                font: 500 15px 'DM Sans',sans-serif;
+                transition: all .2s;
+                width: 100%;
+            }
+
+            .field input:focus {
+                outline: none;
+                border-color: var(--neon-blue);
+                box-shadow: 0 0 0 4px rgba(45,226,255,.12);
+                background: #0c1324;
+            }
+
+            /* ========== EXAM UI ========== */
+            .exam-topbar {
+                position: sticky;
+                top: 0;
+                z-index: 20;
+                background: rgba(5,7,14,.85);
+                backdrop-filter: blur(14px);
+                border-bottom: 1px solid var(--border);
+            }
+
+            .topbar-inner {
+                max-width: 980px;
+                margin: 0 auto;
+                padding: 14px 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .user-chip {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 600;
+                color: var(--neon-blue);
+            }
+
+
+
+            .progress-bar {
+                height: 3px;
+                background: #0a0f1e;
+                width: 100%;
+            }
+
+            .progress-fill {
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(90deg,var(--neon-blue),var(--neon-green));
+                transition: width 0.4s ease;
+            }
+
+            .exam-main {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 28px 20px 120px;
+            }
+
+            .exam-meta {
+                font-family: 'DM Mono',monospace;
+                font-size: 12px;
+                color: var(--text-dim);
+                margin-bottom: 20px;
+                text-align: center;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+            /* 5-Q Cards */
+            .q-card {
+                background: linear-gradient(180deg,var(--card) 0%,var(--card-2) 100%);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 28px;
+                margin-bottom: 24px;
+                box-shadow: 0 20px 60px -30px rgba(0,0,0,.8);
+                opacity: 0;
+                animation: slideUpCard 0.5s ease forwards;
+            }
+
+            .q-text {
+                font-family: 'Syne',sans-serif;
+                font-weight: 600;
+                font-size: 18px;
+                color: #f1f5f9;
+                margin-bottom: 20px;
+            }
+
+            .opts {
+                display: grid;
+                gap: 10px;
+            }
+
+            .opt-btn {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 14px 16px;
+                border-radius: 11px;
+                border: 1px solid var(--border);
+                background: rgba(255,255,255,.015);
+                color: var(--text);
+                cursor: pointer;
+                font-size: 15px;
+                text-align: left;
+                transition: all .2s;
+                width: 100%;
+            }
+
+            .opt-btn:hover:not(:disabled) {
+                background: rgba(255,255,255,.05);
+                border-color: var(--border-2);
+                transform: translateY(-1px);
+            }
+
+            /* Immediate Feedback Classes */
+            .opt-btn.correct-imm {
+                background: var(--green-bg) !important;
+                border-color: var(--neon-green) !important;
+                color: #fff;
+            }
+
+            .opt-btn.incorrect-imm {
+                background: var(--red-bg) !important;
+                border-color: var(--danger) !important;
+                color: #fff;
+            }
+
+            .opt-btn:disabled:not(.correct-imm):not(.incorrect-imm) {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            .feedback-msg {
+                margin-top: 15px;
+                font-weight: 600;
+                padding: 12px;
+                border-radius: 8px;
+                background: var(--bg-2);
+                text-align: center;
+                font-size: 14px;
+                animation: fadeIn 0.3s ease;
+            }
+
+            /* Navigation Bottom Bar */
+            .nav-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 15;
+                background: rgba(5,7,14,.9);
+                border-top: 1px solid var(--border);
+                padding: 14px 20px;
+            }
+
+            .nav-inner {
+                max-width: 900px;
+                margin: 0 auto;
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            /* ========== RESULTS ========== */
+            .score-hero {
+                text-align: center;
+                padding: 40px;
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                margin-bottom: 20px;
+            }
+
+            .score-pct {
+                font: 800 50px 'Syne',sans-serif;
+                background: linear-gradient(135deg,#fff,var(--neon-green));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .history-list {
+                display: grid;
+                gap: 8px;
+                margin-top: 15px;
+            }
+
+            .history-item {
+                background: var(--bg-2);
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+                font-size: 13px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .hidden {
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="loginScreen" class="screen active">
+            <div class="landing">
+                <div class="landing-box">
+                    <div class="logo">
+                        Cyber<span style="color:var(--text-muted)">//</span>
+                        Exam
+                    </div>
+                    <h1>Certification Protocol</h1>
+                    <p style="color:var(--text-dim); margin-bottom:25px;">Enter your credentials to begin the adaptive assessment.</p>
+                    <div class="field">
+                        <label>Candidate Name</label>
+                        <input type="text" id="studentNameInput" placeholder="e.g. Alex Carter"/>
+                    </div>
+                    <button class="btn btn-primary" id="startBtn" style="width:100%">Initialize Exam →</button>
+                </div>
+            </div>
+        </div>
+        <div id="examScreen" class="screen">
+            <div class="exam-topbar">
+                <div class="topbar-inner">
+                    <div class="user-chip">
+                        👤 <span id="displayStudentName"></span>
+                    </div>
+
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            <div class="exam-main">
+                <div class="exam-meta" id="pageCounter">QUESTIONS 1-5 / X</div>
+                <div id="questionsContainer"></div>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-inner">
+                    <button class="btn btn-ghost" id="prevBtn">← Previous Page</button>
+                    <button class="btn btn-primary" id="nextBtn">Next Page →</button>
+                    <button class="btn btn-danger hidden" id="submitBtn">Submit Exam</button>
+                </div>
+            </div>
+        </div>
+        <div id="resultScreen" class="screen">
+            <div class="exam-main">
+                <div class="score-hero">
+                    <h2 style="color:var(--text-dim); font-family:'DM Mono'; letter-spacing:2px;">EXECUTION COMPLETE</h2>
+                    <div class="score-pct" id="finalScore">0%</div>
+                    <p style="margin-top:10px; font-size:16px;">
+                        Candidate: <strong id="resultName" style="color:var(--neon-blue)"></strong>
+                    </p>
+
+                    <div style="display:flex; justify-content:center; gap:20px; margin-top:20px;">
+                        <div style="color:var(--neon-green)">
+                            Correct: <span id="resultCorrect">0</span>
+                        </div>
+                        <div style="color:var(--danger)">
+                            Incorrect: <span id="resultIncorrect">0</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:30px; display:flex; gap:10px; justify-content:center;">
+                        <button class="btn btn-primary" id="retryBtn">Retry Exam</button>
+                        <button class="btn btn-ghost" id="logoutBtn">Log Out</button>
+                    </div>
+                </div>
+                <div style="margin-top:20px;">
+                    <h3 style="font-family:'Syne'; color:var(--neon-blue);">📜 Previous Attempts</h3>
+                    <div id="historyContainer" class="history-list"></div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // ======================================================================
+            // ⬇️ PASTE YOUR 237 QUESTIONS IN THIS ARRAY ⬇️
+            // Keep the exact same format: { q: "...", opts: ["A","B","C","D"], a: "Correct" }
+            // ======================================================================
+            const rawQuestions = [// --- Network Security - Study Sheet (30 Questions) ---
+            {
+                q: "Which security service is provided by ESP but NOT by AH?",
+                opts: ["Access control", "Confidentiality", "Message authentication", "Replay attack protection"],
+                a: "Confidentiality"
+            }, {
+                q: "Which set of services is common to BOTH AH and ESP?",
+                opts: ["Confidentiality, Access control, Replay attack protection", "Confidentiality only", "Entity authentication and Confidentiality", "Access control, Message authentication, Entity authentication, Replay attack protection"],
+                a: "Access control, Message authentication, Entity authentication, Replay attack protection"
+            }, {
+                q: "What protocol does IPsec use to automatically create Security Associations in large VPNs?",
+                opts: ["SSL/TLS", "Diffie-Hellman Protocol directly", "Internet Key Exchange (IKE)", "RSA Key Exchange Protocol"],
+                a: "Internet Key Exchange (IKE)"
+            }, {
+                q: "During the first exchange of IKE Phase 1, which algorithm creates the bi-directional IKE SA?",
+                opts: ["Diffie-Hellman key exchange", "RSA public-key encryption", "AES symmetric encryption", "Digital Signature Algorithm (DSA)"],
+                a: "Diffie-Hellman key exchange"
+            }, {
+                q: "What important secret is established during IKE Phase 1 for later use in Phase 2?",
+                opts: ["The public certificates of both routers", "A master secret used to compute IPSec SA keys in Phase 2", "The SPIs for each SA", "Session cookies"],
+                a: "A master secret used to compute IPSec SA keys in Phase 2"
+            }, {
+                q: "What happens during the second exchange of IKE Phase 1 that did NOT happen in the first?",
+                opts: ["Diffie-Hellman keys are generated for the first time", "The two routers exchange routing tables", "Both sides reveal their identity by signing messages, and negotiate IPsec algorithms", "SA keys are destroyed and regenerated"],
+                a: "Both sides reveal their identity by signing messages, and negotiate IPsec algorithms"
+            }, {
+                q: "What is the primary motivation for IKE using TWO phases instead of one?",
+                opts: ["RFC 5996 formatting requirements", "To allow different algorithms in each phase", "To ensure SA keys are at least 256 bits long", "Phase 2 avoids public-key crypto, allowing many SAs to be generated cheaply"],
+                a: "Phase 2 avoids public-key crypto, allowing many SAs to be generated cheaply"
+            }, {
+                q: "What is the outcome at the end of IKE Phase 2?",
+                opts: ["An SA in each direction, with encryption and authentication session keys", "Only one unidirectional SA from R1 to R2", "The IKE SA is terminated and all keys discarded", "SAD entries are deleted"],
+                a: "An SA in each direction, with encryption and authentication session keys"
+            }, {
+                q: "A firewall is best described as:",
+                opts: ["Software only, running on a dedicated server", "A combination of hardware and software that isolates an organization's internal network from the Internet", "A purely logical construct implemented in application-layer software", "A cryptographic protocol"],
+                a: "A combination of hardware and software that isolates an organization's internal network from the Internet"
+            }, {
+                q: "Which of the following is NOT one of the three goals of a firewall?",
+                opts: ["All traffic passes through the firewall", "Only authorized traffic is allowed to pass", "The firewall encrypts all inbound packets before forwarding them internally", "The firewall itself is immune to penetration"],
+                a: "The firewall encrypts all inbound packets before forwarding them internally"
+            }, {
+                q: "Firewalls are classified into how many categories, and what are they?",
+                opts: ["Two: hardware and software", "Two: packet filters and application gateways", "Four: packet filters, stateful filters, application gateways, and IDS", "Three: traditional packet filters, stateful filters, and application gateways"],
+                a: "Three: traditional packet filters, stateful filters, and application gateways"
+            }, {
+                q: "A traditional packet filter examines packets in what manner?",
+                opts: ["In the context of ongoing TCP sessions", "Each datagram in isolation, based on administrator-specific rules", "By inspecting the full application payload", "Only outbound packets"],
+                a: "Each datagram in isolation, based on administrator-specific rules"
+            }, {
+                q: "Which of the following is NOT a typical basis for packet-filter decisions?",
+                opts: ["The authenticated username of the sender", "IP source or destination address", "Protocol type", "TCP or UDP source and destination port"],
+                a: "The authenticated username of the sender"
+            }, {
+                q: "To block externally-initiated TCP connections while permitting internally-initiated ones, a filter should:",
+                opts: ["Block all packets with destination port 80", "Block all UDP packets", "Filter all incoming TCP segments with the ACK bit set to 0", "Block all ICMP messages"],
+                a: "Filter all incoming TCP segments with the ACK bit set to 0"
+            }, {
+                q: "What does the restrictive access control list in Table 8.6 ultimately allow through?",
+                opts: ["All TCP and UDP traffic", "Only Web (HTTP) traffic initiated from within the organization, and DNS traffic", "All inbound traffic with ACK=1", "Telnet, HTTP, and DNS traffic"],
+                a: "Only Web (HTTP) traffic initiated from within the organization, and DNS traffic"
+            }, {
+                q: "To prevent the network from being tracerouted by outsiders, a filter should:",
+                opts: ["Block all TCP SYN segments from outside", "Block all inbound UDP packets", "Drop all ICMP ping packets", "Block all outgoing ICMP TTL expired messages"],
+                a: "Block all outgoing ICMP TTL expired messages"
+            }, {
+                q: "How do stateful filters differ from traditional packet filters?",
+                opts: ["Stateful filters track all ongoing TCP connections in a connection table", "Stateful filters inspect application-layer data", "Stateful filters only filter UDP traffic", "Stateful filters operate at the physical layer"],
+                a: "Stateful filters track all ongoing TCP connections in a connection table"
+            }, {
+                q: "How does a stateful firewall detect the beginning of a new TCP connection?",
+                opts: ["It monitors DNS queries", "It requires users to register connections", "By observing the three-way handshake (SYN, SYNACK, ACK)", "By inspecting HTTP headers"],
+                a: "By observing the three-way handshake (SYN, SYNACK, ACK)"
+            }, {
+                q: "An attacker sends a forged packet with TCP source port 80 and ACK=1, not part of any real connection. What does the stateful filter do?",
+                opts: ["Allows it because source port 80 is trusted", "Checks the connection table, finds no matching entry, and rejects the packet", "Forwards it to the application gateway", "Allows it because ACK=1"],
+                a: "Checks the connection table, finds no matching entry, and rejects the packet"
+            }, {
+                q: "An application gateway is needed when an organization wants to:",
+                opts: ["Block all TCP SYN packets", "Prevent UDP radio", "Filter based on IP and port alone", "Provide Telnet access to restricted internal users who must first authenticate"],
+                a: "Provide Telnet access to restricted internal users who must first authenticate"
+            }, {
+                q: "What does an application gateway inspect that packet filters do NOT?",
+                opts: ["Application-layer data, beyond the IP/TCP/UDP headers", "The physical MAC address", "Only the IP source address", "Routing table entries"],
+                a: "Application-layer data, beyond the IP/TCP/UDP headers"
+            }, {
+                q: "In a Telnet application gateway setup, how is the router's packet filter configured?",
+                opts: ["Allow all Telnet connections", "Block all Telnet traffic", "Block all Telnet connections except those originating from the application gateway's IP address", "Redirect all Telnet to port 443"],
+                a: "Block all Telnet connections except those originating from the application gateway's IP address"
+            }, {
+                q: "Once a user is granted Telnet permission, what three steps does the gateway perform?",
+                opts: ["Generates a session key, encrypts, forwards directly", "Prompts for the external hostname, sets up a Telnet session to it, and relays data bidirectionally", "Saves credentials, opens VPN, terminates after 30 min", "Logs session, sends SNMP alert, forwards TCP"],
+                a: "Prompts for the external hostname, sets up a Telnet session to it, and relays data bidirectionally"
+            }, {
+                q: "What capability does an IDS have that traditional/stateful packet filters do NOT?",
+                opts: ["Blocking packets based on IP", "Inspecting TCP flag bits", "Authenticating users", "Deep packet inspection examining the actual application data"],
+                a: "Deep packet inspection examining the actual application data"
+            }, {
+                q: "What is the difference between an IDS and an IPS?",
+                opts: ["An IDS generates alerts; an IPS actively filters out traffic", "An IDS blocks traffic; an IPS only blocks known signatures", "An IDS operates at application layer; IPS at network layer", "No technical difference"],
+                a: "An IDS generates alerts; an IPS actively filters out traffic"
+            }, {
+                q: "Which BEST describes the full range of attacks an IDS can detect?",
+                opts: ["Only DoS and port scans", "Only worms and viruses", "Network mapping, port scans, TCP stack scans, DoS flooding, worms, OS/app vulnerability attacks", "Only attacks from outside the DMZ"],
+                a: "Network mapping, port scans, TCP stack scans, DoS flooding, worms, OS/app vulnerability attacks"
+            }, {
+                q: "In the network architecture described, what is the Demilitarized Zone (DMZ)?",
+                opts: ["High-security zone", "A lower-security region protected only by the packet filter, hosting servers that communicate with the outside world", "Unmonitored region", "Region without IDS sensors"],
+                a: "A lower-security region protected only by the packet filter, hosting servers that communicate with the outside world"
+            }, {
+                q: "When multiple IDS sensors are deployed, how do they operate?",
+                opts: ["Independently", "Only closest sensor sends alerts", "Compete to detect first", "In concert, sending suspicious traffic info to a central IDS processor"],
+                a: "In concert, sending suspicious traffic info to a central IDS processor"
+            }, {
+                q: "Why is a compromised firewall described as potentially 'worse than no firewall at all'?",
+                opts: ["It provides a false sense of security", "It injects malicious packets", "It deletes SAD entries", "It disables IDS sensors"],
+                a: "It provides a false sense of security"
+            }, {
+                q: "Which public-domain IDS system is specifically mentioned as 'immensely popular'?",
+                opts: ["Wireshark", "nmap", "Snort", "iptables"],
+                a: "Snort"
+            },
+            // --- Computer Network Security-Practical Questions Bank (50 Questions) ---
+            {
+                q: "A company wants to ensure data is not altered during transmission. Which principle is this?",
+                opts: ["Authentication", "Availability", "Integrity", "Confidentiality"],
+                a: "Integrity"
+            }, {
+                q: "Using HTTPS instead of HTTP primarily ensures:",
+                opts: ["Data encryption", "IP masking", "Data compression", "Faster communication"],
+                a: "Data encryption"
+            }, {
+                q: "Which attack targets availability?",
+                opts: ["SQL Injection", "DDoS", "MITM", "Phishing"],
+                a: "DDoS"
+            }, {
+                q: "Hashing is mainly used for:",
+                opts: ["Compression", "Encryption", "Authentication", "Data integrity"],
+                a: "Data integrity"
+            }, {
+                q: "Which ensures only authorized users access a system?",
+                opts: ["Authentication", "Integrity", "Availability", "Non-repudiation"],
+                a: "Authentication"
+            }, {
+                q: "A digital signature provides:",
+                opts: ["Compression", "Speed", "Integrity and authentication", "Encryption only"],
+                a: "Integrity and authentication"
+            }, {
+                q: "Which is an example of a strong password?",
+                opts: ["abcdef", "Admin@1234!", "password", "123456"],
+                a: "Admin@1234!"
+            }, {
+                q: "Purpose of vulnerability scanning?",
+                opts: ["Monitor logs", "Identify weaknesses", "Block traffic", "Encrypt data"],
+                a: "Identify weaknesses"
+            }, {
+                q: "Tool for port scanning?",
+                opts: ["Metasploit", "Wireshark", "Nmap", "Snort"],
+                a: "Nmap"
+            }, {
+                q: "Open port 22 indicates:",
+                opts: ["FTP", "SMTP", "HTTP", "SSH"],
+                a: "SSH"
+            }, {
+                q: "False positives mean:",
+                opts: ["System crash", "Incorrect detection", "Missed vulnerabilities", "Network delay"],
+                a: "Incorrect detection"
+            }, {
+                q: "Credentialed scans provide:",
+                opts: ["No access", "Less detail", "Only external data", "More accurate results"],
+                a: "More accurate results"
+            }, {
+                q: "After vulnerability identification:",
+                opts: ["Reporting", "Encryption", "Exploitation", "Scanning"],
+                a: "Reporting"
+            }, {
+                q: "Outdated software vulnerability:",
+                opts: ["Buffer overflow", "Zero-day", "Patch management issue", "Misconfiguration"],
+                a: "Patch management issue"
+            }, {
+                q: "Firewall filtering by IP/port:",
+                opts: ["Proxy", "Packet filtering", "NGFW", "Stateful"],
+                a: "Packet filtering"
+            }, {
+                q: "IDS stands for:",
+                opts: ["Intrusion Detection System", "Internal Data Security", "Internet Detection System", "Integrated Defense Service"],
+                a: "Intrusion Detection System"
+            }, {
+                q: "IPS differs because it:",
+                opts: ["Encrypts traffic", "Logs only", "Detects only", "Prevents attacks"],
+                a: "Prevents attacks"
+            }, {
+                q: "Tracks connection states:",
+                opts: ["Proxy", "Stateless", "Stateful firewall", "Cloud firewall"],
+                a: "Stateful firewall"
+            }, {
+                q: "Signature-based IDS detects:",
+                opts: ["Known attacks", "All traffic", "Unknown threats", "Encryption errors"],
+                a: "Known attacks"
+            }, {
+                q: "Blocks malicious traffic automatically:",
+                opts: ["IDS", "Switch", "IPS", "Router"],
+                a: "IPS"
+            }, {
+                q: "False negatives mean:",
+                opts: ["Missed attacks", "Duplicate logs", "System crash", "Wrong alerts"],
+                a: "Missed attacks"
+            }, {
+                q: "VPN provides:",
+                opts: ["Public access", "Secure communication", "Faster internet", "Compression"],
+                a: "Secure communication"
+            }, {
+                q: "VPN protocol:",
+                opts: ["SMTP", "IPSec", "FTP", "HTTP"],
+                a: "IPSec"
+            }, {
+                q: "VPN tunnel ensures:",
+                opts: ["Open access", "Data loss", "Packet duplication", "Encrypted communication"],
+                a: "Encrypted communication"
+            }, {
+                q: "SSL VPN layer:",
+                opts: ["Physical", "Network", "Application", "Transport"],
+                a: "Application"
+            }, {
+                q: "Split tunneling:",
+                opts: ["All traffic via VPN", "No encryption", "Faster scanning", "Some traffic bypass VPN"],
+                a: "Some traffic bypass VPN"
+            }, {
+                q: "Remote VPN connects:",
+                opts: ["Server to server", "LAN to LAN", "User to network", "Two networks"],
+                a: "User to network"
+            }, {
+                q: "VPN misuse risk:",
+                opts: ["Data backup", "Unauthorized access", "Faster speed", "Compression"],
+                a: "Unauthorized access"
+            }, {
+                q: "WPA2 encryption:",
+                opts: ["AES", "SHA1", "DES", "MD5"],
+                a: "AES"
+            }, {
+                q: "Hidden SSID provides:",
+                opts: ["Authentication", "Minimal security", "Encryption", "Strong security"],
+                a: "Minimal security"
+            }, {
+                q: "Rogue AP:",
+                opts: ["Firewall", "Switch", "Authorized AP", "Unauthorized AP"],
+                a: "Unauthorized AP"
+            }, {
+                q: "Capturing Wi-Fi traffic:",
+                opts: ["Spoofing", "Sniffing", "DDoS", "Phishing"],
+                a: "Sniffing"
+            }, {
+                q: "MAC filtering is:",
+                opts: ["Encryption method", "Strong security", "Weak security", "VPN type"],
+                a: "Weak security"
+            }, {
+                q: "WPA3 improves:",
+                opts: ["Blocking users", "Stronger authentication", "Slowing network", "Removing encryption"],
+                a: "Stronger authentication"
+            }, {
+                q: "Evil twin attack:",
+                opts: ["Malware", "Encryption", "Fake access point", "Firewall bypass"],
+                a: "Fake access point"
+            }, {
+                q: "Packet sniffing tool:",
+                opts: ["Nessus", "Snort", "Wireshark", "Nmap"],
+                a: "Wireshark"
+            }, {
+                q: "Traffic spike indicates:",
+                opts: ["Backup", "Normal usage", "Attack", "Update"],
+                a: "Attack"
+            }, {
+                q: "NetFlow used for:",
+                opts: ["Encryption", "Firewall rules", "Traffic monitoring", "Password cracking"],
+                a: "Traffic monitoring"
+            }, {
+                q: "Common protocol analyzed:",
+                opts: ["CMOS", "USB", "BIOS", "TCP/IP"],
+                a: "TCP/IP"
+            }, {
+                q: "Behavioral detection finds:",
+                opts: ["Known attacks", "Unknown anomalies", "Passwords", "IP addresses"],
+                a: "Unknown anomalies"
+            }, {
+                q: "IDS tool:",
+                opts: ["Outlook", "Excel", "Snort", "Chrome"],
+                a: "Snort"
+            }, {
+                q: "Packet header includes:",
+                opts: ["Virus", "File content", "Password", "Metadata"],
+                a: "Metadata"
+            }, {
+                q: "Deep packet inspection:",
+                opts: ["Only ports", "Only IP", "Full packet content", "Only headers"],
+                a: "Full packet content"
+            }, {
+                q: "First step:",
+                opts: ["Recovery", "Detection", "Analysis", "Eradication"],
+                a: "Detection"
+            }, {
+                q: "Forensics focuses on:",
+                opts: ["Encryption", "Prevention", "Backup", "Evidence collection"],
+                a: "Evidence collection"
+            }, {
+                q: "Chain of custody ensures:",
+                opts: ["Encryption", "Fast response", "Evidence integrity", "Logging"],
+                a: "Evidence integrity"
+            }, {
+                q: "Log analysis helps:",
+                opts: ["Encryption", "Backup", "Compression", "Attack tracing"],
+                a: "Attack tracing"
+            }, {
+                q: "Containment aims:",
+                opts: ["Delete logs", "Restart system", "Stop attack spread", "Encrypt data"],
+                a: "Stop attack spread"
+            }, {
+                q: "Forensics tool:",
+                opts: ["Chrome", "FTK", "Excel", "Photoshop"],
+                a: "FTK"
+            }, {
+                q: "Post-incident activity:",
+                opts: ["Lessons learned", "Disconnect network", "Delete data", "Ignore issue"],
+                a: "Lessons learned"
+            },
+            // --- Network Security MCQ - Answer Key (63 Questions) ---
+            {
+                q: "What is the primary distinction between data and information?",
+                opts: ["Data is digital; information is analog", "Data refers to raw facts; information is processed data enabling decisions", "Information is stored; data is transmitted", "Data is text only; information includes multimedia"],
+                a: "Data refers to raw facts; information is processed data enabling decisions"
+            }, {
+                q: "Which of the following is an example of information rather than data?",
+                opts: ["A list of all student marks", "A random collection of numbers", "Knowing you passed or failed based on your score", "The binary code stored on a hard drive"],
+                a: "Knowing you passed or failed based on your score"
+            }, {
+                q: "The word 'data' refers to information presented in a form that is:",
+                opts: ["Encrypted and secured", "Agreed and accepted upon by its creators and users", "Converted to binary format", "Transmitted wirelessly"],
+                a: "Agreed and accepted upon by its creators and users"
+            }, {
+                q: "The main objective of data communication and networking is to:",
+                opts: ["Store large amounts of data on servers", "Encrypt data for security purposes", "Enable seamless exchange of data between any two points in the world", "Compress data to save bandwidth"],
+                a: "Enable seamless exchange of data between any two points in the world"
+            }, {
+                q: "In computer networks, data communication involves exchange of data between:",
+                opts: ["Two humans via telephone", "Two devices over a transmission medium", "A server and the internet", "Software applications only"],
+                a: "Two devices over a transmission medium"
+            }, {
+                q: "A protocol in data communication is best described as:",
+                opts: ["A physical cable used for transmission", "A device that amplifies signals", "A set of rules specifying what, how, and when data is communicated", "A type of wireless antenna"],
+                a: "A set of rules specifying what, how, and when data is communicated"
+            }, {
+                q: "Which part of the communication system includes the sender, receiver, and intermediate devices?",
+                opts: ["Software part", "Protocol layer", "Hardware part", "Application layer"],
+                a: "Hardware part"
+            }, {
+                q: "Without a protocol, communicating entities are like:",
+                opts: ["Two computers with no power supply", "Two persons trying to talk in different languages without knowing the other", "A network without cables", "A server with no storage"],
+                a: "Two persons trying to talk in different languages without knowing the other"
+            }, {
+                q: "Which characteristic ensures data is delivered to the correct destination and user?",
+                opts: ["Accuracy", "Timeliness", "Jitter", "Delivery"],
+                a: "Delivery"
+            }, {
+                q: "Which characteristic refers to delivering audio/video data without delay in real time?",
+                opts: ["Accuracy", "Timeliness", "Delivery", "Jitter"],
+                a: "Timeliness"
+            }, {
+                q: "Jitter in data communication is defined as:",
+                opts: ["Loss of data packets", "The variation in packet arrival time", "Corruption of data", "The speed of data transmission"],
+                a: "The variation in packet arrival time"
+            }, {
+                q: "Which characteristic is concerned with delivering data without introducing errors?",
+                opts: ["Delivery", "Jitter", "Accuracy", "Timeliness"],
+                a: "Accuracy"
+            }, {
+                q: "How many fundamental characteristics affect the effectiveness of a data communication system?",
+                opts: ["3", "5", "4", "7"],
+                a: "4"
+            }, {
+                q: "A data communication system consists of how many core components?",
+                opts: ["3", "4", "6", "5"],
+                a: "5"
+            }, {
+                q: "Which component of a data communication system is the path through which the message travels?",
+                opts: ["Protocol", "Sender", "Transmission Medium", "Message"],
+                a: "Transmission Medium"
+            }, {
+                q: "Audio data in data representation is characterized as:",
+                opts: ["Discrete and segmented", "Stored as a pattern of bits", "Continuous, not discrete", "Compressed only during transmission"],
+                a: "Continuous, not discrete"
+            }, {
+                q: "Which encoding system is commonly used for both text and numbers in data communication?",
+                opts: ["JPEG and PNG", "ASCII and Unicode", "MP3 and WAV", "HTML and CSS"],
+                a: "ASCII and Unicode"
+            }, {
+                q: "Text data in computer networks is stored as:",
+                opts: ["A series of light pulses", "Analog voltage signals", "A pattern of bits", "Continuous audio waves"],
+                a: "A pattern of bits"
+            }, {
+                q: "Which of the following is NOT a form of data representation listed in the lecture?",
+                opts: ["Text", "Images", "Spreadsheets", "Audio"],
+                a: "Spreadsheets"
+            }, {
+                q: "Video data is referred to as broadcasting data in the form of:",
+                opts: ["Continuous audio streams", "A picture or movie", "Binary digits only", "Encrypted text packets"],
+                a: "A picture or movie"
+            }, {
+                q: "In which topology are all devices connected to a single central cable?",
+                opts: ["Star Topology", "Ring Topology", "Bus Topology", "Mesh Topology"],
+                a: "Bus Topology"
+            }, {
+                q: "What is the central element in a Star topology?",
+                opts: ["A backbone bus", "A central hub or switch", "A router", "A ring cable"],
+                a: "A central hub or switch"
+            }, {
+                q: "Which topology forms a circular structure where each device connects to two others?",
+                opts: ["Star", "Bus", "Tree", "Ring"],
+                a: "Ring"
+            }, {
+                q: "In Mesh topology, each device is directly connected to:",
+                opts: ["Only the central hub", "The nearest neighbor only", "Every other device in the network", "A backbone bus cable"],
+                a: "Every other device in the network"
+            }, {
+                q: "Tree topology combines features of which two topologies?",
+                opts: ["Ring and Mesh", "Star and Bus", "Bus and Ring", "Star and Mesh"],
+                a: "Star and Bus"
+            }, {
+                q: "Which topology is most cost-effective and commonly used in small office/home networks?",
+                opts: ["Mesh", "Star", "Bus", "Tree"],
+                a: "Bus"
+            }, {
+                q: "What is a major disadvantage of Bus topology?",
+                opts: ["Requires the most cabling", "Central hub failure brings down the network", "A failure in the central bus can bring down the entire network", "Too complex to set up"],
+                a: "A failure in the central bus can bring down the entire network"
+            }, {
+                q: "Which topology is most suitable for large enterprise networks requiring high reliability?",
+                opts: ["Bus", "Ring", "Star", "Mesh"],
+                a: "Star"
+            }, {
+                q: "In Star topology, failure of one device affects:",
+                opts: ["The entire network", "Only that device, not the rest of the network", "The central hub and all connected devices", "Half the connected devices"],
+                a: "Only that device, not the rest of the network"
+            }, {
+                q: "Ring topology was historically used in which type of networks?",
+                opts: ["Wide Area Networks (WAN)", "Token-ring LANs", "Wireless networks", "Satellite networks"],
+                a: "Token-ring LANs"
+            }, {
+                q: "Hybrid topology is best described as:",
+                opts: ["A single topology used in all networks", "A combination of two or more different network topologies", "Only star and bus combined", "A wireless-only topology"],
+                a: "A combination of two or more different network topologies"
+            }, {
+                q: "Which topology provides redundancy through multiple paths for data transmission?",
+                opts: ["Bus", "Star", "Ring", "Mesh"],
+                a: "Mesh"
+            }, {
+                q: "The physical topology of a network defines:",
+                opts: ["How data flows logically", "The protocols used for communication", "How devices are physically wired", "The encryption methods used"],
+                a: "How devices are physically wired"
+            }, {
+                q: "Tree topology is best suited for which type of organization?",
+                opts: ["Small home networks", "Single-room offices", "Large enterprise networks, educational campuses", "Peer-to-peer file sharing"],
+                a: "Large enterprise networks, educational campuses"
+            }, {
+                q: "The OSI model was introduced by which organization?",
+                opts: ["IEEE", "IETF", "ISO (International Standards Organization)", "W3C"],
+                a: "ISO (International Standards Organization)"
+            }, {
+                q: "When was the OSI model first introduced?",
+                opts: ["Early 1960s", "Late 1970s", "Early 1990s", "Mid 1980s"],
+                a: "Late 1970s"
+            }, {
+                q: "How many layers does the OSI reference model have?",
+                opts: ["4", "5", "6", "7"],
+                a: "7"
+            }, {
+                q: "Which OSI layer is responsible for movement of individual bits from one node to the next?",
+                opts: ["Data Link Layer", "Network Layer", "Physical Layer", "Transport Layer"],
+                a: "Physical Layer"
+            }, {
+                q: "Which layer breaks outgoing data into frames and reassembles received frames?",
+                opts: ["Network Layer", "Physical Layer", "Session Layer", "Data Link Layer"],
+                a: "Data Link Layer"
+            }, {
+                q: "The Data Link layer is responsible for moving frames from:",
+                opts: ["Source host to destination host", "One process to another", "One hop (node) to the next", "One application to another"],
+                a: "One hop (node) to the next"
+            }, {
+                q: "Which OSI layer implements routing of packets and defines the most optimum path?",
+                opts: ["Data Link Layer", "Transport Layer", "Session Layer", "Network Layer"],
+                a: "Network Layer"
+            }, {
+                q: "Logical addressing, enabling any endpoint to be identified, is a function of:",
+                opts: ["Physical Layer", "Network Layer", "Presentation Layer", "Session Layer"],
+                a: "Network Layer"
+            }, {
+                q: "The Network layer is responsible for delivery of individual packets from:",
+                opts: ["One hop to the next hop", "One process to another process", "Source host to destination host", "One application to another"],
+                a: "Source host to destination host"
+            }, {
+                q: "Which layer provides reliable mechanism for data exchange between two processes in different computers?",
+                opts: ["Network Layer", "Session Layer", "Transport Layer", "Application Layer"],
+                a: "Transport Layer"
+            }, {
+                q: "The Transport layer is responsible for delivery of a message from:",
+                opts: ["Source host to destination host", "One process to another", "One node to the next node", "One application to the user"],
+                a: "One process to another"
+            }, {
+                q: "Which OSI layer controls the dialogue between two end systems, defining how to start, control, and end sessions?",
+                opts: ["Transport Layer", "Presentation Layer", "Session Layer", "Application Layer"],
+                a: "Session Layer"
+            }, {
+                q: "Password validation and log-on handling is managed by which OSI layer?",
+                opts: ["Application Layer", "Transport Layer", "Session Layer", "Network Layer"],
+                a: "Session Layer"
+            }, {
+                q: "The Session layer is responsible for:",
+                opts: ["Routing packets across networks", "Dialog control and synchronization", "Translating data formats", "Providing physical signal transmission"],
+                a: "Dialog control and synchronization"
+            }, {
+                q: "Which OSI layer handles data compression and encryption (cryptography)?",
+                opts: ["Session Layer", "Transport Layer", "Presentation Layer", "Application Layer"],
+                a: "Presentation Layer"
+            }, {
+                q: "The Presentation layer is responsible for:",
+                opts: ["Routing and addressing", "Establishing sessions between users", "Translation, compression, and encryption", "Moving bits across physical media"],
+                a: "Translation, compression, and encryption"
+            }, {
+                q: "Which OSI layer is the highest level and interacts directly with application programs?",
+                opts: ["Presentation Layer", "Session Layer", "Transport Layer", "Application Layer"],
+                a: "Application Layer"
+            }, {
+                q: "File transfer, electronic mail, and remote login are examples of which OSI layer?",
+                opts: ["Session Layer", "Presentation Layer", "Network Layer", "Application Layer"],
+                a: "Application Layer"
+            }, {
+                q: "Physical layer specifications define all of the following EXCEPT:",
+                opts: ["Voltage levels", "IP addressing", "Timing of voltage changes", "Physical connectors"],
+                a: "IP addressing"
+            }, {
+                q: "Which communication modes does the Data Link layer support?",
+                opts: ["Unicast and multicast", "Simplex, half-duplex or full-duplex", "Full-duplex only", "Asynchronous and synchronous"],
+                a: "Simplex, half-duplex or full-duplex"
+            }, {
+                q: "Internetworking (facilitating interconnection between heterogeneous networks) is a function of:",
+                opts: ["Data Link Layer", "Transport Layer", "Physical Layer", "Network Layer"],
+                a: "Network Layer"
+            }, {
+                q: "Was the TCP/IP protocol suite developed before or after the OSI model?",
+                opts: ["After the OSI model", "At the same time", "Before the OSI model", "It replaced the OSI model entirely"],
+                a: "Before the OSI model"
+            }, {
+                q: "The original TCP/IP protocol suite was defined as how many software layers?",
+                opts: ["3", "5", "7", "4"],
+                a: "4"
+            }, {
+                q: "Today, TCP/IP is thought of as a model with how many layers?",
+                opts: ["4", "7", "5", "6"],
+                a: "5"
+            }, {
+                q: "When comparing OSI and TCP/IP, which two OSI layers are absent from the TCP/IP protocol suite?",
+                opts: ["Physical and Data Link", "Network and Transport", "Session and Presentation", "Application and Transport"],
+                a: "Session and Presentation"
+            }, {
+                q: "The Application layer in TCP/IP is generally equivalent to which combination of OSI layers?",
+                opts: ["Physical, Data Link, Network", "Network, Transport, Session", "Application, Presentation, Session", "Transport, Network, Data Link"],
+                a: "Application, Presentation, Session"
+            }, {
+                q: "TCP/IP is described as a hierarchical protocol, meaning:",
+                opts: ["All layers are equal in importance", "Each upper-level protocol is supported by one or more lower-level protocols", "Lower layers control higher layers", "Each layer operates independently"],
+                a: "Each upper-level protocol is supported by one or more lower-level protocols"
+            }, {
+                q: "Which of the following protocols operates at the Transport layer in TCP/IP?",
+                opts: ["IP", "HTTP", "TCP", "DNS"],
+                a: "TCP"
+            }, {
+                q: "Which protocol operates at the Network layer in the TCP/IP suite?",
+                opts: ["TCP", "UDP", "FTP", "IP"],
+                a: "IP"
+            },
+            // --- Network Security - MCQss (94 Questions) ---
+            {
+                q: "What is the primary goal of network security?",
+                opts: ["Increase speed", "Protect data and resources", "Reduce cost", "Improve UI"],
+                a: "Protect data and resources"
+            }, {
+                q: "Which of the following is NOT a security goal?",
+                opts: ["Confidentiality", "Integrity", "Availability", "Scalability"],
+                a: "Scalability"
+            }, {
+                q: "Confidentiality ensures:",
+                opts: ["Data is accurate", "Data is accessible", "Data is kept secret", "Data is compressed"],
+                a: "Data is kept secret"
+            }, {
+                q: "Integrity means:",
+                opts: ["Data is unchanged", "Data is hidden", "Data is deleted", "Data is copied"],
+                a: "Data is unchanged"
+            }, {
+                q: "Availability ensures:",
+                opts: ["Data is encrypted", "Data is accessible when needed", "Data is modified", "Data is hidden"],
+                a: "Data is accessible when needed"
+            }, {
+                q: "A passive attack involves:",
+                opts: ["Modifying data", "Monitoring data", "Deleting data", "Destroying data"],
+                a: "Monitoring data"
+            }, {
+                q: "An active attack includes:",
+                opts: ["Eavesdropping", "Traffic analysis", "Data modification", "Monitoring"],
+                a: "Data modification"
+            }, {
+                q: "Which is an example of a passive attack?",
+                opts: ["Replay attack", "Eavesdropping", "DoS attack", "Spoofing"],
+                a: "Eavesdropping"
+            }, {
+                q: "A Denial-of-Service attack aims to:",
+                opts: ["Steal data", "Modify data", "Disrupt services", "Encrypt data"],
+                a: "Disrupt services"
+            }, {
+                q: "Spoofing refers to:",
+                opts: ["Encrypting data", "Pretending to be another entity", "Blocking traffic", "Compressing files"],
+                a: "Pretending to be another entity"
+            }, {
+                q: "Cryptography is used to:",
+                opts: ["Increase speed", "Protect information", "Store data", "Delete data"],
+                a: "Protect information"
+            }, {
+                q: "Plaintext is:",
+                opts: ["Encrypted data", "Original data", "Modified data", "Hidden data"],
+                a: "Original data"
+            }, {
+                q: "Ciphertext is:",
+                opts: ["Original message", "Decrypted message", "Encrypted message", "Deleted message"],
+                a: "Encrypted message"
+            }, {
+                q: "Encryption converts:",
+                opts: ["Ciphertext to plaintext", "Plaintext to ciphertext", "Data to image", "Image to data"],
+                a: "Plaintext to ciphertext"
+            }, {
+                q: "Decryption converts:",
+                opts: ["Ciphertext to plaintext", "Plaintext to ciphertext", "Data to binary", "Binary to image"],
+                a: "Ciphertext to plaintext"
+            }, {
+                q: "Symmetric key encryption uses:",
+                opts: ["One key", "Two keys", "No keys", "Three keys"],
+                a: "One key"
+            }, {
+                q: "Asymmetric encryption uses:",
+                opts: ["One key", "Two keys", "No keys", "Multiple keys"],
+                a: "Two keys"
+            }, {
+                q: "Public key is:",
+                opts: ["Secret", "Shared openly", "Encrypted", "Deleted"],
+                a: "Shared openly"
+            }, {
+                q: "Private key is:",
+                opts: ["Public", "Shared", "Kept secret", "Deleted"],
+                a: "Kept secret"
+            }, {
+                q: "Example of symmetric algorithm:",
+                opts: ["RSA", "AES", "ECC", "Diffie-Hellman"],
+                a: "AES"
+            }, {
+                q: "Authentication verifies:",
+                opts: ["Access rights", "Identity", "Data speed", "Data size"],
+                a: "Identity"
+            }, {
+                q: "Authorization determines:",
+                opts: ["Identity", "Access level", "Encryption", "Speed"],
+                a: "Access level"
+            }, {
+                q: "Which is an authentication factor?",
+                opts: ["Password", "File", "Folder", "Program"],
+                a: "Password"
+            }, {
+                q: "Multi-factor authentication uses:",
+                opts: ["One factor", "Two or more factors", "No factors", "Only passwords"],
+                a: "Two or more factors"
+            }, {
+                q: "Biometrics is based on:",
+                opts: ["Passwords", "Physical traits", "Files", "Programs"],
+                a: "Physical traits"
+            }, {
+                q: "A firewall is used to:",
+                opts: ["Encrypt data", "Monitor and control traffic", "Delete files", "Increase bandwidth"],
+                a: "Monitor and control traffic"
+            }, {
+                q: "IDS stands for:",
+                opts: ["Internet Data System", "Intrusion Detection System", "Internal Data Service", "Integrated Data System"],
+                a: "Intrusion Detection System"
+            }, {
+                q: "IPS stands for:",
+                opts: ["Internet Protection Service", "Intrusion Prevention System", "Internal Processing System", "Integrated Protection System"],
+                a: "Intrusion Prevention System"
+            }, {
+                q: "Antivirus software protects against:",
+                opts: ["Hardware failure", "Malware", "Power loss", "Speed issues"],
+                a: "Malware"
+            }, {
+                q: "VPN provides:",
+                opts: ["Public access", "Secure communication", "Faster internet", "Free data"],
+                a: "Secure communication"
+            }, {
+                q: "Phishing is:",
+                opts: ["Network attack", "Social engineering attack", "Hardware attack", "Physical attack"],
+                a: "Social engineering attack"
+            }, {
+                q: "Malware includes:",
+                opts: ["Virus", "Worm", "Trojan", "All of the above"],
+                a: "All of the above"
+            }, {
+                q: "A virus requires:",
+                opts: ["Network", "Host file", "Internet", "Firewall"],
+                a: "Host file"
+            }, {
+                q: "A worm spreads:",
+                opts: ["Manually", "Automatically", "Slowly", "Physically"],
+                a: "Automatically"
+            }, {
+                q: "Trojan horse is:",
+                opts: ["Safe program", "Malicious disguised as legitimate", "Hardware tool", "Network cable"],
+                a: "Malicious disguised as legitimate"
+            }, {
+                q: "HTTPS provides:",
+                opts: ["Unsecured communication", "Secure communication", "Faster speed", "Data loss"],
+                a: "Secure communication"
+            }, {
+                q: "SSL/TLS is used for:",
+                opts: ["File storage", "Secure communication", "Data deletion", "Compression"],
+                a: "Secure communication"
+            }, {
+                q: "IPsec works at:",
+                opts: ["Application layer", "Network layer", "Physical layer", "Transport layer"],
+                a: "Network layer"
+            }, {
+                q: "SSH is used for:",
+                opts: ["Secure remote login", "File deletion", "Data compression", "Network speed"],
+                a: "Secure remote login"
+            }, {
+                q: "Digital signatures provide:",
+                opts: ["Confidentiality", "Authentication and integrity", "Speed", "Compression"],
+                a: "Authentication and integrity"
+            }, {
+                q: "Which network security component acts as a barrier between trusted internal networks and untrusted external networks, controlling traffic based on predefined rules?",
+                opts: ["Intrusion Detection System (IDS)", "Firewall", "Virtual Private Network (VPN)", "Network Segmentation"],
+                a: "Firewall"
+            }, {
+                q: "Which component encrypts data transmissions over public networks to ensure secure remote access for employees?",
+                opts: ["Antivirus Software", "Access Control", "Virtual Private Network (VPN)", "Firewall"],
+                a: "Virtual Private Network (VPN)"
+            }, {
+                q: "Network segmentation improves security primarily by:",
+                opts: ["Encrypting all data packets in transit", "Monitoring user behavior continuously", "Limiting the spread of threats and isolating sensitive data", "Blocking all external network traffic"],
+                a: "Limiting the spread of threats and isolating sensitive data"
+            }, {
+                q: "The CIA triad in network security stands for:",
+                opts: ["Control, Integrity, Availability", "Confidentiality, Integrity, Availability", "Confidentiality, Isolation, Authentication", "Cryptography, Integrity, Access"],
+                a: "Confidentiality, Integrity, Availability"
+            }, {
+                q: "An organization detects suspicious traffic patterns in real-time and automatically blocks the offending connection before damage occurs. Which component is MOST responsible for this?",
+                opts: ["Firewall", "Encryption", "Intrusion Detection and Prevention System (IDPS)", "Access Control"],
+                a: "Intrusion Detection and Prevention System (IDPS)"
+            }, {
+                q: "Which of the following is NOT listed as a fundamental practice of network security basics?",
+                opts: ["Creating strong passwords", "Logging out from shared computers", "Access control", "Installing physical surveillance cameras"],
+                a: "Installing physical surveillance cameras"
+            }, {
+                q: "The ultimate goal of many network attacks is to:",
+                opts: ["Disrupt network hardware physically", "Steal, modify, or deny access to valuable data", "Increase network bandwidth consumption", "Expose security policy documentation"],
+                a: "Steal, modify, or deny access to valuable data"
+            }, {
+                q: "A network threat is distinct from a simple software bug because network threats:",
+                opts: ["Always originate from internal users", "Target networks or connected devices with specific objectives such as spying, disruption, or financial gain", "Can only be countered by hardware solutions", "Are exclusively focused on data encryption"],
+                a: "Target networks or connected devices with specific objectives such as spying, disruption, or financial gain"
+            }, {
+                q: "Which level of network security focuses on safeguarding network infrastructure using biometric authentication and secure entry controls?",
+                opts: ["Administrative Network Security", "Technical Network Security", "Physical Network Security", "Application Network Security"],
+                a: "Physical Network Security"
+            }, {
+                q: "How does Technical Network Security differ from Administrative Network Security?",
+                opts: ["Technical focuses on user behavior; Administrative focuses on data encryption", "Technical uses physical barriers; Administrative uses software controls", "Technical protects stored/transmitted data using encryption and IDS; Administrative governs policies, permissions, and authorization", "Technical is more expensive; Administrative is more effective"],
+                a: "Technical protects stored/transmitted data using encryption and IDS; Administrative governs policies, permissions, and authorization"
+            }, {
+                q: "In Access Control security, what is the correct mapping of Authentication and Authorization?",
+                opts: ["Authentication = What can you access? / Authorization = Who are you?", "Authentication = Who are you? / Authorization = What can you access?", "Authentication = What you know / Authorization = What you are", "Authentication = Multi-factor / Authorization = Single-factor"],
+                a: "Authentication = Who are you? / Authorization = What can you access?"
+            }, {
+                q: "Which type of network security includes WPA3 encryption, secure SSID configuration, and MAC address filtering?",
+                opts: ["Web Security", "Application Security", "Workload Security", "Wireless Security"],
+                a: "Wireless Security"
+            }, {
+                q: "A company's web application is attacked via SQL injection and XSS. The security team also deploys a Web Application Firewall (WAF). Which combination of security types is directly involved?",
+                opts: ["Wireless Security + Application Security", "Web Security + Application Security", "Network Security + Workload Security", "Access Control + Web Security"],
+                a: "Web Security + Application Security"
+            }, {
+                q: "Choose the MOST accurate statement about the AH protocol compared to ESP:",
+                opts: ["AH provides confidentiality while ESP only provides authentication", "AH and ESP provide identical security services", "AH provides source authentication and data integrity but NOT confidentiality; ESP adds confidentiality", "AH is more widely used because it is simpler to implement"],
+                a: "AH provides source authentication and data integrity but NOT confidentiality; ESP adds confidentiality"
+            }, {
+                q: "End-point authentication is defined as:",
+                opts: ["Encrypting all messages sent over a network", "The process of one entity proving its identity to another entity over a computer network", "Verifying the integrity of data packets in transit", "Establishing a VPN tunnel between two routers"],
+                a: "The process of one entity proving its identity to another entity over a computer network"
+            }, {
+                q: "End-point authentication is different from proving that a past message came from a claimed sender because:",
+                opts: ["It uses more complex encryption", "It focuses on authenticating a 'live' party at the actual time of communication", "It requires physical presence of both parties", "It relies on biometric verification over the network"],
+                a: "It focuses on authenticating a 'live' party at the actual time of communication"
+            }, {
+                q: "When performing authentication over a network, what is the CORRECT basis for network authentication?",
+                opts: ["Hardware tokens only", "Physical smart cards", "Messages and data exchanged as part of an authentication protocol", "Out-of-band telephone verification"],
+                a: "Messages and data exchanged as part of an authentication protocol"
+            }, {
+                q: "An authentication protocol typically runs _______ other protocols such as reliable data transfer or routing exchange protocols.",
+                opts: ["Before", "After", "At the same time as", "Instead of"],
+                a: "Before"
+            }, {
+                q: "In Authentication Protocol ap1.0, Alice sends 'I am Alice' to Bob. What is the primary flaw?",
+                opts: ["The message is too short to be secure", "There is no way for Bob to verify the sender is actually Alice", "The protocol requires too much bandwidth", "Alice's identity cannot be transmitted digitally"],
+                a: "There is no way for Bob to verify the sender is actually Alice"
+            }, {
+                q: "In ap2.0, an intruder forges Alice's IP address in the source field of a datagram sent to Bob. What is this attack called?",
+                opts: ["Replay Attack", "Man-in-the-Middle Attack", "IP Spoofing", "Packet Sniffing"],
+                a: "IP Spoofing"
+            }, {
+                q: "IP spoofing against ap2.0 can be avoided if:",
+                opts: ["All traffic is encrypted end-to-end", "Alice uses a dynamic IP address", "Trudy's first-hop router is configured to forward only datagrams containing Trudy's own IP source address", "Multi-factor authentication is enabled"],
+                a: "Trudy's first-hop router is configured to forward only datagrams containing Trudy's own IP source address"
+            }, {
+                q: "In Authentication Protocol ap3.0, what does Alice use to prove her identity to Bob?",
+                opts: ["A digital certificate", "A nonce value", "A secret password", "Her IP address and MAC address"],
+                a: "A secret password"
+            }, {
+                q: "The main security flaw in ap3.0 (password authentication) is that:",
+                opts: ["Passwords can be guessed by brute force", "An eavesdropper can intercept and learn Alice's unencrypted password", "The server cannot store passwords securely", "Passwords expire too quickly"],
+                a: "An eavesdropper can intercept and learn Alice's unencrypted password"
+            }, {
+                q: "Protocol ap3.1 encrypts Alice's password with a shared symmetric key. Despite this, what attack does ap3.1 still fail to prevent?",
+                opts: ["IP Spoofing", "Brute-Force Attack", "Replay Attack - Trudy records and replays the encrypted password to impersonate Alice later", "Man-in-the-Middle Attack"],
+                a: "Replay Attack - Trudy records and replays the encrypted password to impersonate Alice later"
+            }, {
+                q: "Choose the MOST accurate comparison between ap3.0 and ap3.1:",
+                opts: ["ap3.1 is completely secure while ap3.0 is completely insecure", "Both are equally vulnerable - encrypting the password in ap3.1 does not solve the replay vulnerability", "ap3.0 is more secure because plaintext is harder to intercept than ciphertext", "ap3.1 eliminates all attack vectors except brute force"],
+                a: "Both are equally vulnerable - encrypting the password in ap3.1 does not solve the replay vulnerability"
+            }, {
+                q: "In authentication protocols, what is a 'nonce'?",
+                opts: ["A type of symmetric encryption key", "A number that a protocol uses only once in its lifetime and never repeats", "A digital certificate issued by a Certificate Authority", "An encrypted version of a user's password"],
+                a: "A number that a protocol uses only once in its lifetime and never repeats"
+            }, {
+                q: "In ap4.0, after Bob sends nonce R to Alice, what does Alice do NEXT?",
+                opts: ["Alice sends her password encrypted with the nonce", "Alice sends nonce R back in plaintext", "Alice encrypts the nonce R using the shared symmetric key K(A-B) and sends it back to Bob", "Alice generates a new nonce and sends it to Bob"],
+                a: "Alice encrypts the nonce R using the shared symmetric key K(A-B) and sends it back to Bob"
+            }, {
+                q: "How does ap4.0 solve the liveness problem that ap3.0 and ap3.1 could not solve?",
+                opts: ["It eliminates the need for any shared secret", "The nonce proves Alice is 'live' - Bob can distinguish current authentication from any previously recorded replay", "It uses public-key cryptography instead", "It uses two-factor authentication"],
+                a: "The nonce proves Alice is 'live' - Bob can distinguish current authentication from any previously recorded replay"
+            }, {
+                q: "Which element of ap4.0 is analogous to TCP's initial sequence number, and why?",
+                opts: ["The shared symmetric key K(A-B) analogous to TCP's checksum", "The nonce R chosen by Bob analogous to TCP's ISN, forcing Alice to echo a fresh unique value to prove she is live", "Alice's claim 'I am Alice' analogous to TCP's SYN flag", "The encryption algorithm analogous to TCP's window size"],
+                a: "The nonce R chosen by Bob analogous to TCP's ISN, forcing Alice to echo a fresh unique value to prove she is live"
+            }, {
+                q: "After describing ap4.0, what natural follow-up question does the material raise?",
+                opts: ["Whether ap4.0 can authenticate multiple users simultaneously", "Whether a nonce and PUBLIC KEY cryptography can solve the authentication problem instead of symmetric keys", "Whether ap4.0 can prevent denial-of-service attacks", "Whether the shared key must be transmitted securely before ap4.0 runs"],
+                a: "Whether a nonce and PUBLIC KEY cryptography can solve the authentication problem instead of symmetric keys"
+            }, {
+                q: "IPsec provides security at which layer of the network stack?",
+                opts: ["Application Layer", "Transport Layer", "Network Layer", "Data Link Layer"],
+                a: "Network Layer"
+            }, {
+                q: "Why is network-layer security described as providing 'blanket coverage'?",
+                opts: ["Because it encrypts only selected high-value traffic", "Because ALL data (email, web pages, TCP handshakes, management messages) is hidden from any third-party sniffers", "Because it applies only to the network perimeter", "Because it covers the physical cables electromagnetically"],
+                a: "Because ALL data (email, web pages, TCP handshakes, management messages) is hidden from any third-party sniffers"
+            }, {
+                q: "IPsec provides mechanisms for which complete set of security services?",
+                opts: ["Confidentiality only", "Confidentiality and source authentication only", "Confidentiality, source authentication, data integrity, and replay-attack prevention", "Availability, integrity, and non-repudiation"],
+                a: "Confidentiality, source authentication, data integrity, and replay-attack prevention"
+            }, {
+                q: "Choose the MOST accurate statement about AH and ESP protocols in IPsec:",
+                opts: ["Both AH and ESP provide confidentiality, but AH is faster", "AH provides source authentication and data integrity but NOT confidentiality; ESP provides all three - making ESP far more widely used for VPNs", "AH is deprecated because it provides no security at all", "ESP is less secure than AH because it only encrypts without authenticating"],
+                a: "AH provides source authentication and data integrity but NOT confidentiality; ESP provides all three - making ESP far more widely used for VPNs"
+            }, {
+                q: "IPsec was designed by which organization?",
+                opts: ["IEEE", "W3C", "IETF (Internet Engineering Task Force)", "ISO"],
+                a: "IETF (Internet Engineering Task Force)"
+            }, {
+                q: "An IPsec datagram retains a traditional IPv4 header alongside the IPsec header and encrypted payload. What is the purpose of keeping the traditional IPv4 header?",
+                opts: ["It allows the payload to be decrypted at intermediate routers", "It enables public Internet routers to process and route the datagram as an ordinary IPv4 datagram without understanding IPsec", "It stores the encryption key for the receiving host", "It identifies the VPN tunnel endpoint for billing"],
+                a: "It enables public Internet routers to process and route the datagram as an ordinary IPv4 datagram without understanding IPsec"
+            }, {
+                q: "A network completely separate from the public Internet, dedicated to one institution with its own routers, links, and DNS infrastructure is called a:",
+                opts: ["Virtual Private Network (VPN)", "Secure Local Area Network", "Private Network", "Encrypted Subnet"],
+                a: "Private Network"
+            }, {
+                q: "How does a VPN achieve confidentiality while using the public Internet?",
+                opts: ["By using dedicated leased lines that bypass the Internet", "By encrypting inter-office traffic before it enters the public Internet", "By routing traffic only through trusted ISPs", "By using application-layer encryption exclusively"],
+                a: "By encrypting inter-office traffic before it enters the public Internet"
+            }, {
+                q: "An institution has headquarters, a branch office, and n traveling salespersons with bi-directional IPsec traffic between headquarters and each party. How many total Security Associations (SAs) exist?",
+                opts: ["n+2", "2n+2", "2n", "4n"],
+                a: "2n+2"
+            }, {
+                q: "A Security Association (SA) is described as a 'simplex' logical connection. What does 'simplex' mean here?",
+                opts: ["It uses simple encryption algorithms only", "It is bidirectional, carrying traffic both ways", "It is unidirectional - from source to destination only", "It supports only one security protocol at a time"],
+                a: "It is unidirectional - from source to destination only"
+            }, {
+                q: "Which of the following is NOT part of the state information a router maintains about a Security Association?",
+                opts: ["A 32-bit Security Parameter Index (SPI)", "The type of encryption to be used (e.g., 3DES with CBC)", "The destination URL of the remote user's current browser session", "The type of integrity check (e.g., HMAC with MD5) and the authentication key"],
+                a: "The destination URL of the remote user's current browser session"
+            }, {
+                q: "Where does an IPsec entity store all of its Security Association state information?",
+                opts: ["In a distributed blockchain ledger", "In the Security Association Database (SAD) in the entity's OS kernel", "In the IPsec header of each datagram", "In a dedicated hardware security module (HSM)"],
+                a: "In the Security Association Database (SAD) in the entity's OS kernel"
+            }, {
+                q: "What is the CORRECT order of steps in the ESP (Encapsulating Security Payload) procedure?",
+                opts: ["ESP header added -> payload encrypted -> ESP trailer added -> authentication data created and appended", "ESP trailer added to payload -> payload+trailer encrypted -> ESP header added -> authentication data created from header+payload+trailer -> authentication data appended after trailer", "Payload encrypted -> ESP header added -> ESP trailer added -> authentication data prepended", "Authentication data created -> ESP header added -> payload encrypted -> ESP trailer appended"],
+                a: "ESP trailer added to payload -> payload+trailer encrypted -> ESP header added -> authentication data created from header+payload+trailer -> authentication data appended after trailer"
+            }, {
+                q: "What does the 'next-header' field inside the ESP trailer hold?",
+                opts: ["The IP address of the next router hop", "The sequence number for anti-replay protection", "The original value of the protocol field (e.g., TCP or UDP) of the payload", "The length of the authentication data field"],
+                a: "The original value of the protocol field (e.g., TCP or UDP) of the payload"
+            }, {
+                q: "The Security Parameter Index (SPI) field in ESP is how many bits wide?",
+                opts: ["8 bits", "16 bits", "32 bits", "64 bits"],
+                a: "32 bits"
+            }, {
+                q: "What is a KEY difference between authentication data calculation in AH versus ESP?",
+                opts: ["In AH, authentication covers only the payload; in ESP, it covers the entire datagram", "In AH, part of the IP header IS included in the authentication data calculation; in ESP, the IP header is NOT included", "In AH, authentication uses SHA-256; in ESP, only MD5 is used", "In AH, there is no authentication data field at all"],
+                a: "In AH, part of the IP header IS included in the authentication data calculation; in ESP, the IP header is NOT included"
+            }, {
+                q: "An end user at home wants to securely access their company's internal network over the public Internet using IPsec. Which IPsec application scenario best describes this?",
+                opts: ["Secure branch office connectivity", "Establishing extranet connectivity with business partners", "Secure remote access - user with IP security protocols connects to ISP and gains secure company network access", "Enhancing electronic commerce security for a public website"],
+                a: "Secure remote access - user with IP security protocols connects to ISP and gains secure company network access"
+            }, {
+                q: "Transport Mode ESP is primarily used to:",
+                opts: ["Encrypt an entire IP packet including its original IP header", "Encrypt and optionally authenticate the data payload carried by IP (e.g., a TCP segment) between two hosts", "Create a new IP header for routing across the public Internet", "Compress IP packets to reduce bandwidth usage"],
+                a: "Encrypt and optionally authenticate the data payload carried by IP (e.g., a TCP segment) between two hosts"
+            }, {
+                q: "In Transport Mode ESP with IPv4, where is the ESP header inserted?",
+                opts: ["After the ESP trailer", "Before the original IP header", "Immediately prior to the transport-layer header (e.g., TCP, UDP, ICMP)", "After the authentication data field"],
+                a: "Immediately prior to the transport-layer header (e.g., TCP, UDP, ICMP)"
+            }, {
+                q: "What is a key drawback of Transport Mode ESP?",
+                opts: ["It cannot support IPv6", "It requires public key certificates for all parties", "Traffic analysis is still possible because the original IP header remains visible and unencrypted", "It encrypts so much data that intermediate routers cannot forward packets"],
+                a: "Traffic analysis is still possible because the original IP header remains visible and unencrypted"
+            }, {
+                q: "In Tunnel Mode ESP, why is it NECESSARY to wrap the encrypted block with a NEW IP header?",
+                opts: ["To avoid exceeding the standard IP datagram size", "Because the encrypted original IP header contains routing information that intermediate routers cannot read - they need a plaintext routing header to forward the packet", "To add additional authentication beyond what ESP provides", "To allow the destination to identify the tunnel endpoint before decryption"],
+                a: "Because the encrypted original IP header contains routing information that intermediate routers cannot read - they need a plaintext routing header to forward the packet"
+            }, {
+                q: "Choose the MOST accurate comparison between Transport Mode and Tunnel Mode ESP:",
+                opts: ["Transport mode encrypts the entire original IP packet and adds a new IP header; Tunnel mode encrypts only the payload", "Both modes are identical in scope; only the authentication algorithm differs", "Transport mode is suitable for protecting host-to-host connections; Tunnel mode is useful when security gateways protect trusted networks from external networks", "Tunnel mode provides weaker security because it adds an extra unencrypted IP header"],
+                a: "Transport mode is suitable for protecting host-to-host connections; Tunnel mode is useful when security gateways protect trusted networks from external networks"
+            }, {
+                q: "An organization wants to interconnect four private corporate networks through the Internet using encrypted tunnels. Hosts on each internal LAN should NOT need to implement IPsec themselves. Which IPsec mode is MOST appropriate?",
+                opts: ["Transport Mode, because it is simpler to deploy on individual hosts", "Tunnel Mode, because security gateways at each network boundary terminate the tunnels - letting internal hosts avoid implementing IPsec directly", "Transport Mode, because it encrypts the IP header hiding internal network addresses", "Neither - a private leased-line WAN should be used instead"],
+                a: "Tunnel Mode, because security gateways at each network boundary terminate the tunnels - letting internal hosts avoid implementing IPsec directly"
+            }, {
+                q: "During Transport Mode ESP operation, what must each intermediate router do - and NOT do - when forwarding an encrypted packet?",
+                opts: ["Decrypt the payload, verify authentication, re-encrypt, then forward", "Maintain a copy of the SA state to route encrypted packets correctly", "Examine and process the IP header plus any plaintext IP extension headers - but NOT examine the ciphertext", "Forward packets based solely on MAC address tables, ignoring the IP header"],
+                a: "Examine and process the IP header plus any plaintext IP extension headers - but NOT examine the ciphertext"
+            }];
+
+            // ======================================================================
+            // ENGINE CONFIGURATION
+            // ======================================================================
+            const QUESTIONS_PER_PAGE = 5;
+
+            let state = {
+                studentName: '',
+                questions: [],
+                answers: {},
+                currentPage: 0
+            };
+
+            const el = {
+                login: document.getElementById('loginScreen'),
+                exam: document.getElementById('examScreen'),
+                result: document.getElementById('resultScreen'),
+                nameInput: document.getElementById('studentNameInput'),
+                startBtn: document.getElementById('startBtn'),
+                dispName: document.getElementById('displayStudentName'),
+                pageCount: document.getElementById('pageCounter'),
+                progFill: document.getElementById('progressFill'),
+                container: document.getElementById('questionsContainer'),
+                prevBtn: document.getElementById('prevBtn'),
+                nextBtn: document.getElementById('nextBtn'),
+                submitBtn: document.getElementById('submitBtn')
+            };
+
+            function shuffle(arr) {
+                let ci = arr.length, ri;
+                while (ci !== 0) {
+                    ri = Math.floor(Math.random() * ci);
+                    ci--;
+                    [arr[ci],arr[ri]] = [arr[ri], arr[ci]];
+                }
+                return arr;
+            }
+
+            // Start Exam
+            el.startBtn.onclick = () => {
+                const n = el.nameInput.value.trim();
+                if (!n)
+                    return alert("Enter credentials.");
+
+                let pool = JSON.parse(JSON.stringify(rawQuestions));
+                pool = shuffle(pool);
+                pool.forEach(q => {
+                    q.opts = shuffle(q.opts);
+                }
+                );
+
+                state.studentName = n;
+                state.questions = pool;
+                state.answers = {};
+                state.currentPage = 0;
+
+
+                el.login.classList.remove('active');
+                el.exam.classList.add('active');
+                el.dispName.textContent = n;
+
+
+                renderPage();
+            }
+            ;
+
+
+
+            function renderPage() {
+                el.container.innerHTML = '';
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                const startIdx = state.currentPage * QUESTIONS_PER_PAGE;
+                const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, state.questions.length);
+                const totalPages = Math.ceil(state.questions.length / QUESTIONS_PER_PAGE);
+
+                el.pageCount.textContent = `QUESTIONS ${startIdx + 1}-${endIdx} / ${state.questions.length}`;
+                el.progFill.style.width = `${((state.currentPage + 1) / totalPages) * 100}%`;
+
+                // Generate 5 cards
+                for (let i = startIdx; i < endIdx; i++) {
+                    const q = state.questions[i];
+                    const userAns = state.answers[i];
+
+                    // Staggered animation delay based on position on the page
+                    const delay = (i - startIdx) * 0.1;
+
+                    const card = document.createElement('div');
+                    card.className = 'q-card';
+                    card.style.animationDelay = `${delay}s`;
+
+                    card.innerHTML = `<div class="q-text"><span style="color:var(--neon-blue)">Q${i + 1}.</span> ${q.q}</div>`;
+                    const optsDiv = document.createElement('div');
+                    optsDiv.className = 'opts';
+
+                    q.opts.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.className = 'opt-btn';
+                        btn.textContent = opt;
+
+                        if (userAns) {
+                            btn.disabled = true;
+                            if (opt === q.a)
+                                btn.classList.add('correct-imm');
+                            else if (opt === userAns)
+                                btn.classList.add('incorrect-imm');
+                        } else {
+                            btn.onclick = () => handleAnswer(i, opt, card, q.a);
+                        }
+                        optsDiv.appendChild(btn);
+                    }
+                    );
+
+                    card.appendChild(optsDiv);
+
+                    if (userAns) {
+                        const fb = document.createElement('div');
+                        fb.className = 'feedback-msg';
+                        if (userAns === q.a)
+                            fb.innerHTML = `<span style="color:var(--neon-green)">✓ Correct</span>`;
+                        else
+                            fb.innerHTML = `<span style="color:var(--danger)">✕ Incorrect.</span> Correct: <span style="color:var(--neon-green)">${q.a}</span>`;
+                        card.appendChild(fb);
+                    }
+
+                    el.container.appendChild(card);
+                }
+
+                // Nav Buttons
+                el.prevBtn.disabled = state.currentPage === 0;
+                if (state.currentPage === totalPages - 1) {
+                    el.nextBtn.classList.add('hidden');
+                    el.submitBtn.classList.remove('hidden');
+                } else {
+                    el.nextBtn.classList.remove('hidden');
+                    el.submitBtn.classList.add('hidden');
+                }
+            }
+
+            // Immediate Feedback DOM update (no full re-render)
+            function handleAnswer(qIndex, selectedOpt, cardElement, correctOpt) {
+                if (state.answers[qIndex])
+                    return;
+                state.answers[qIndex] = selectedOpt;
+
+                const btns = cardElement.querySelectorAll('.opt-btn');
+                btns.forEach(btn => {
+                    btn.disabled = true;
+                    if (btn.textContent === correctOpt)
+                        btn.classList.add('correct-imm');
+                    else if (btn.textContent === selectedOpt)
+                        btn.classList.add('incorrect-imm');
+                }
+                );
+
+                const fb = document.createElement('div');
+                fb.className = 'feedback-msg';
+                if (selectedOpt === correctOpt)
+                    fb.innerHTML = `<span style="color:var(--neon-green)">✓ Correct</span>`;
+                else
+                    fb.innerHTML = `<span style="color:var(--danger)">✕ Incorrect.</span> Correct: <span style="color:var(--neon-green)">${correctOpt}</span>`;
+                cardElement.appendChild(fb);
+            }
+
+            el.prevBtn.onclick = () => {
+                if (state.currentPage > 0) {
+                    state.currentPage--;
+                    renderPage();
+                }
+            }
+            ;
+            el.nextBtn.onclick = () => {
+                if (state.currentPage < Math.ceil(state.questions.length / QUESTIONS_PER_PAGE) - 1) {
+                    state.currentPage++;
+                    renderPage();
+                }
+            }
+            ;
+
+            el.submitBtn.onclick = () => {
+                const answered = Object.keys(state.answers).length;
+                if (answered < state.questions.length) {
+                    if (!confirm(`You missed ${state.questions.length - answered} questions. Submit anyway?`))
+                        return;
+                }
+                submitExam();
+            }
+            ;
+
+            function submitExam() {
+                let correct = 0
+                  , incorrect = 0;
+
+                state.questions.forEach( (q, i) => {
+                    if (state.answers[i] === q.a)
+                        correct++;
+                    else
+                        incorrect++;
+                }
+                );
+
+                const pct = Math.round((correct / state.questions.length) * 100);
+
+                document.getElementById('finalScore').textContent = `${pct}%`;
+                document.getElementById('resultName').textContent = state.studentName;
+                document.getElementById('resultCorrect').textContent = correct;
+                document.getElementById('resultIncorrect').textContent = incorrect;
+
+                saveHistory(pct, correct);
+
+                el.exam.classList.remove('active');
+                el.result.classList.add('active');
+            }
+
+            function saveHistory(pct, correct) {
+                let h = JSON.parse(localStorage.getItem('netSecHistory') || '[]');
+                h.unshift({
+                    date: new Date().toLocaleDateString(),
+                    name: state.studentName,
+                    pct: pct + '%',
+                    score: `${correct}/${state.questions.length}`
+                });
+                if (h.length > 5)
+                    h.pop();
+                localStorage.setItem('netSecHistory', JSON.stringify(h));
+
+                const hc = document.getElementById('historyContainer');
+                hc.innerHTML = h.map(item => `
+        <div class="history-item">
+          <span><strong>${item.name}</strong> (${item.date})</span>
+          <span style="color:var(--neon-green)">${item.pct} [${item.score}]</span>
+        </div>
+      `).join('');
+            }
+
+            document.getElementById('retryBtn').onclick = () => {
+                el.result.classList.remove('active');
+                el.startBtn.click();
+            }
+            ;
+            document.getElementById('logoutBtn').onclick = () => {
+                window.location.reload();
+            }
+            ;
+
+            // Load history on init
+            saveHistory(0, 0);
+            document.getElementById('historyContainer').innerHTML = '';
+            saveHistory();
+        </script>
+    </body>
+</html>
