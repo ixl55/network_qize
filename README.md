@@ -8,7 +8,7 @@
 
 Ready to test your skills? Access the live environment here:
 
-[**➔ Launch CyberExam Dashboard**](YOUR_LINK_HERE)
+[**➔ Launch CyberExam Dashboard**](https://ixl55.github.io/network_qize/)
 
 ---
 
