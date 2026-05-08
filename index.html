@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="ltr">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>CyberExam — Network Security Platform</title>
         <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+        <!-- Firebase SDKs (compat / global API — no bundler needed) -->
+        <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+        <script src="firebase-config.js"></script>
+        <script>
+            if (window.FB_CONFIG && window.FB_CONFIG.apiKey !== 'PASTE_YOUR_API_KEY') {
+                firebase.initializeApp(window.FB_CONFIG);
+            }
+        </script>
         <style>
             :root {
                 --bg: #05070e;
@@ -37,7 +46,7 @@
                 box-sizing: border-box;
             }
 
-            html, body {
+            html,body {
                 height: 100%;
             }
 
@@ -55,7 +64,7 @@
                 content: '';
                 position: fixed;
                 inset: 0;
-                background-image: linear-gradient(rgba(0,212,255,0.035) 1px,transparent 1px), linear-gradient(90deg,rgba(0,212,255,0.035) 1px,transparent 1px);
+                background-image: linear-gradient(rgba(0,212,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.035) 1px,transparent 1px);
                 background-size: 56px 56px;
                 pointer-events: none;
                 z-index: 0;
@@ -67,7 +76,7 @@
                 content: '';
                 position: fixed;
                 inset: 0;
-                background: radial-gradient(ellipse 60% 40% at 15% 10%,rgba(45,226,255,.08),transparent 60%), radial-gradient(ellipse 60% 40% at 85% 90%,rgba(182,120,255,.08),transparent 60%), radial-gradient(ellipse 40% 30% at 50% 50%,rgba(57,255,136,.04),transparent 60%);
+                background: radial-gradient(ellipse 60% 40% at 15% 10%,rgba(45,226,255,.08),transparent 60%),radial-gradient(ellipse 60% 40% at 85% 90%,rgba(182,120,255,.08),transparent 60%),radial-gradient(ellipse 40% 30% at 50% 50%,rgba(57,255,136,.04),transparent 60%);
                 pointer-events: none;
                 z-index: 0;
             }
@@ -122,7 +131,17 @@
                 }
             }
 
-            /* ========== BUTTONS ========== */
+            @keyframes pulse {
+                0%,100% {
+                    opacity: 1
+                }
+
+                50% {
+                    opacity: .6
+                }
+            }
+
+            /* BUTTONS */
             .btn {
                 appearance: none;
                 border: none;
@@ -171,7 +190,7 @@
                 border: 1px solid var(--red-bd);
             }
 
-            /* ========== LANDING ========== */
+            /* LANDING */
             .landing {
                 min-height: 100vh;
                 display: flex;
@@ -182,7 +201,7 @@
 
             .landing-box {
                 width: 100%;
-                max-width: 560px;
+                max-width: 600px;
                 background: linear-gradient(180deg,var(--card) 0%,var(--card-2) 100%);
                 border: 1px solid var(--border);
                 border-radius: 20px;
@@ -209,18 +228,83 @@
             .landing h1 {
                 font-family: 'Syne',sans-serif;
                 font-weight: 800;
-                font-size: clamp(30px,5.2vw,44px);
+                font-size: clamp(26px,4.5vw,40px);
                 line-height: 1.08;
-                margin-bottom: 14px;
+                margin-bottom: 8px;
                 background: linear-gradient(135deg,#fff 30%,var(--neon-blue) 75%,var(--neon-purple) 100%);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
             }
 
+            .landing-sub {
+                color: var(--text-dim);
+                margin-bottom: 22px;
+                font-size: 14px;
+            }
+
+            /* Arabic instructions */
+            .arabic-card {
+                background: rgba(45,226,255,.04);
+                border: 1px solid rgba(45,226,255,.18);
+                border-radius: 14px;
+                padding: 20px 22px;
+                margin-bottom: 24px;
+                direction: rtl;
+                text-align: right;
+            }
+
+            .arabic-title {
+                font-family: 'Syne',sans-serif;
+                font-weight: 700;
+                font-size: 16px;
+                color: var(--neon-blue);
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                justify-content: flex-end;
+            }
+
+            .arabic-list {
+                list-style: none;
+                display: grid;
+                gap: 7px;
+            }
+
+            .arabic-list li {
+                font-size: 13.5px;
+                color: var(--text-dim);
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                justify-content: flex-end;
+                line-height: 1.55;
+            }
+
+            .arabic-list li span.num {
+                color: var(--neon-blue);
+                font-family: 'DM Mono',monospace;
+                font-size: 12px;
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+
+            .arabic-tip {
+                margin-top: 12px;
+                padding: 10px 14px;
+                background: rgba(57,255,136,.07);
+                border: 1px solid rgba(57,255,136,.2);
+                border-radius: 8px;
+                color: var(--neon-green);
+                font-size: 13px;
+                text-align: center;
+            }
+
+            /* Form */
             .field {
                 display: grid;
-                gap: 8px;
-                margin-bottom: 20px;
+                gap: 7px;
+                margin-bottom: 16px;
             }
 
             .field label {
@@ -235,7 +319,7 @@
                 background: #0a0f1e;
                 border: 1px solid var(--border);
                 color: var(--text);
-                padding: 14px 16px;
+                padding: 13px 16px;
                 border-radius: 10px;
                 font: 500 15px 'DM Sans',sans-serif;
                 transition: all .2s;
@@ -249,12 +333,41 @@
                 background: #0c1324;
             }
 
-            /* ========== EXAM UI ========== */
+            .field input.error {
+                border-color: var(--danger);
+                box-shadow: 0 0 0 4px rgba(255,59,107,.1);
+            }
+
+            .err-msg {
+                color: var(--danger);
+                font-size: 12px;
+                margin-top: 4px;
+                display: none;
+            }
+
+            .err-msg.show {
+                display: block;
+            }
+
+            /* Credit footer */
+            .credit {
+                margin-top: 22px;
+                text-align: center;
+                font-size: 12px;
+                color: var(--text-muted);
+            }
+
+            .credit span {
+                color: var(--neon-purple);
+                font-weight: 600;
+            }
+
+            /* EXAM UI */
             .exam-topbar {
                 position: sticky;
                 top: 0;
                 z-index: 20;
-                background: rgba(5,7,14,.85);
+                background: rgba(5,7,14,.88);
                 backdrop-filter: blur(14px);
                 border-bottom: 1px solid var(--border);
             }
@@ -262,10 +375,12 @@
             .topbar-inner {
                 max-width: 980px;
                 margin: 0 auto;
-                padding: 14px 20px;
+                padding: 12px 20px;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                gap: 10px;
+                flex-wrap: wrap;
             }
 
             .user-chip {
@@ -274,9 +389,34 @@
                 gap: 8px;
                 font-weight: 600;
                 color: var(--neon-blue);
+                font-size: 14px;
             }
 
+            .college-chip {
+                font-size: 12px;
+                color: var(--text-muted);
+                font-family: 'DM Mono',monospace;
+            }
 
+            .timer {
+                padding: 7px 12px;
+                border-radius: 9px;
+                background: var(--green-bg);
+                border: 1px solid var(--green-bd);
+                color: var(--neon-green);
+                font: 600 13px 'DM Mono',monospace;
+                letter-spacing: .08em;
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .timer.danger {
+                background: var(--red-bg);
+                border-color: var(--red-bd);
+                color: var(--danger);
+                animation: pulse 1s infinite;
+            }
 
             .progress-bar {
                 height: 3px;
@@ -288,13 +428,13 @@
                 height: 100%;
                 width: 0%;
                 background: linear-gradient(90deg,var(--neon-blue),var(--neon-green));
-                transition: width 0.4s ease;
+                transition: width .4s ease;
             }
 
             .exam-main {
                 max-width: 900px;
                 margin: 0 auto;
-                padding: 28px 20px 120px;
+                padding: 28px 20px 130px;
             }
 
             .exam-meta {
@@ -307,7 +447,6 @@
                 text-transform: uppercase;
             }
 
-            /* 5-Q Cards */
             .q-card {
                 background: linear-gradient(180deg,var(--card) 0%,var(--card-2) 100%);
                 border: 1px solid var(--border);
@@ -316,15 +455,16 @@
                 margin-bottom: 24px;
                 box-shadow: 0 20px 60px -30px rgba(0,0,0,.8);
                 opacity: 0;
-                animation: slideUpCard 0.5s ease forwards;
+                animation: slideUpCard .5s ease forwards;
             }
 
             .q-text {
                 font-family: 'Syne',sans-serif;
                 font-weight: 600;
-                font-size: 18px;
+                font-size: 17px;
                 color: #f1f5f9;
                 margin-bottom: 20px;
+                line-height: 1.4;
             }
 
             .opts {
@@ -336,13 +476,13 @@
                 display: flex;
                 align-items: center;
                 gap: 14px;
-                padding: 14px 16px;
+                padding: 13px 16px;
                 border-radius: 11px;
                 border: 1px solid var(--border);
                 background: rgba(255,255,255,.015);
                 color: var(--text);
                 cursor: pointer;
-                font-size: 15px;
+                font-size: 14.5px;
                 text-align: left;
                 transition: all .2s;
                 width: 100%;
@@ -354,43 +494,41 @@
                 transform: translateY(-1px);
             }
 
-            /* Immediate Feedback Classes */
             .opt-btn.correct-imm {
-                background: var(--green-bg) !important;
-                border-color: var(--neon-green) !important;
+                background: var(--green-bg)!important;
+                border-color: var(--neon-green)!important;
                 color: #fff;
             }
 
             .opt-btn.incorrect-imm {
-                background: var(--red-bg) !important;
-                border-color: var(--danger) !important;
+                background: var(--red-bg)!important;
+                border-color: var(--danger)!important;
                 color: #fff;
             }
 
             .opt-btn:disabled:not(.correct-imm):not(.incorrect-imm) {
-                opacity: 0.5;
+                opacity: .5;
                 cursor: not-allowed;
             }
 
             .feedback-msg {
-                margin-top: 15px;
+                margin-top: 14px;
                 font-weight: 600;
-                padding: 12px;
+                padding: 11px;
                 border-radius: 8px;
                 background: var(--bg-2);
                 text-align: center;
                 font-size: 14px;
-                animation: fadeIn 0.3s ease;
+                animation: fadeIn .3s ease;
             }
 
-            /* Navigation Bottom Bar */
             .nav-bar {
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
                 z-index: 15;
-                background: rgba(5,7,14,.9);
+                background: rgba(5,7,14,.92);
                 border-top: 1px solid var(--border);
                 padding: 14px 20px;
             }
@@ -403,10 +541,10 @@
                 gap: 10px;
             }
 
-            /* ========== RESULTS ========== */
+            /* RESULTS */
             .score-hero {
                 text-align: center;
-                padding: 40px;
+                padding: 40px 30px;
                 background: var(--card);
                 border: 1px solid var(--border);
                 border-radius: 20px;
@@ -414,10 +552,46 @@
             }
 
             .score-pct {
-                font: 800 50px 'Syne',sans-serif;
+                font: 800 56px 'Syne',sans-serif;
                 background: linear-gradient(135deg,#fff,var(--neon-green));
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
+                line-height: 1;
+            }
+
+            .score-grade {
+                font-size: 18px;
+                font-weight: 700;
+                margin-top: 6px;
+            }
+
+            .result-meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+                margin-top: 18px;
+            }
+
+            .result-meta-item {
+                background: var(--bg-2);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 12px 20px;
+                text-align: center;
+                min-width: 100px;
+            }
+
+            .result-meta-item .val {
+                font: 700 22px 'Syne',sans-serif;
+            }
+
+            .result-meta-item .lbl {
+                font-size: 11px;
+                color: var(--text-muted);
+                letter-spacing: .08em;
+                text-transform: uppercase;
+                margin-top: 2px;
             }
 
             .history-list {
@@ -428,96 +602,199 @@
 
             .history-item {
                 background: var(--bg-2);
-                padding: 10px;
+                padding: 12px 16px;
                 border-radius: 8px;
                 border: 1px solid var(--border);
                 font-size: 13px;
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            /* toast */
+            .toast {
+                position: fixed;
+                bottom: 90px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #0f1424;
+                border: 1px solid var(--border-2);
+                color: var(--text);
+                padding: 12px 22px;
+                border-radius: 10px;
+                font-size: 13px;
+                z-index: 100;
+                animation: fadeIn .3s ease;
+                box-shadow: 0 10px 30px -5px rgba(0,0,0,.5);
             }
 
             .hidden {
-                display: none !important;
+                display: none!important;
+            }
+
+            @media(max-width: 560px) {
+                .landing-box {
+                    padding:28px 20px 24px;
+                }
+
+                .arabic-card {
+                    padding: 16px;
+                }
+
+                .topbar-inner {
+                    gap: 6px;
+                }
             }
         </style>
     </head>
     <body>
+        <!-- ═══════════════════════════════════════════════ LOGIN ═══ -->
         <div id="loginScreen" class="screen active">
             <div class="landing">
                 <div class="landing-box">
                     <div class="logo">
                         Cyber<span style="color:var(--text-muted)">//</span>
-                        Exam
+                        Exam &nbsp;· &nbsp;أمن الشبكات
                     </div>
-                    <h1>Certification Protocol</h1>
-                    <p style="color:var(--text-dim); margin-bottom:25px;">Enter your credentials to begin the adaptive assessment.</p>
+                    <h1>Network Security Certification</h1>
+                    <p class="landing-sub">منصة الاختبار الإلكتروني لمادة أمن الشبكات — أدخل بياناتك للبدء</p>
+                    <!-- Arabic Instructions -->
+                    <div class="arabic-card">
+                        <div class="arabic-title">📋 تعليمات الامتحان</div>
+                        <ul class="arabic-list">
+                            <li>
+                                <span class="num">١</span>
+                                <span>أدخل اسمك الكامل، واسم كليتك، وبريدك الإلكتروني في الخانات أدناه.</span>
+                            </li>
+                            <li>
+                                <span class="num">٢</span>
+                                <span>
+                                    يتضمن الاختبار أكثر من <strong style="color:var(--neon-blue)">٤٠٠ سؤال</strong>
+                                    من نوع الاختيار من متعدد.
+                                </span>
+                            </li>
+                            <li>
+                                <span class="num">٣</span>
+                                <span>لكل سؤال إجابة صحيحة واحدة فقط، تظهر النتيجة فوراً بعد الاختيار.</span>
+                            </li>
+                            <li>
+                                <span class="num">٤</span>
+                                <span>تظهر الأسئلة بشكل عشوائي في كل محاولة جديدة.</span>
+                            </li>
+                            <li>
+                                <span class="num">٥</span>
+                                <span>لا يمكن تعديل الإجابات بعد اختيارها.</span>
+                            </li>
+                            <li>
+                                <span class="num">٦</span>
+                                <span>ستُسجَّل نتيجتك تلقائياً لدى المشرف عند الانتهاء.</span>
+                            </li>
+                        </ul>
+                        <div class="arabic-tip">🎓 حظاً موفقاً في اختبارك!</div>
+                    </div>
+                    <!-- Form -->
                     <div class="field">
-                        <label>Candidate Name</label>
-                        <input type="text" id="studentNameInput" placeholder="e.g. Alex Carter"/>
+                        <label>الاسم الكامل — Full Name</label>
+                        <input type="text" id="inputName" placeholder="e.g. Ahmed Ali Hassan" autocomplete="name"/>
+                        <div class="err-msg" id="errName">Please enter your full name.</div>
                     </div>
-                    <button class="btn btn-primary" id="startBtn" style="width:100%">Initialize Exam →</button>
+                    <div class="field">
+                        <label>الكلية — College / University</label>
+                        <input type="text" id="inputCollege" placeholder="e.g. College of Engineering" autocomplete="organization"/>
+                        <div class="err-msg" id="errCollege">Please enter your college name.</div>
+                    </div>
+                    <div class="field">
+                        <label>البريد الإلكتروني — Email Address</label>
+                        <input type="email" id="inputEmail" placeholder="e.g. student@university.edu" autocomplete="email"/>
+                        <div class="err-msg" id="errEmail">Please enter a valid email address.</div>
+                    </div>
+                    <button class="btn btn-primary" id="startBtn" style="width:100%;margin-top:6px;font-size:15px;padding:16px;">ابدأ الاختبار — Start Exam →
+      </button>
+                    <div class="credit">
+                        Designed &amp;Developed by <span>Karar Haider Kadhim</span>
+                        &nbsp;|&nbsp;Network Security Exam Platform
+      
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- ═══════════════════════════════════════════════ EXAM ═══ -->
         <div id="examScreen" class="screen">
             <div class="exam-topbar">
                 <div class="topbar-inner">
-                    <div class="user-chip">
-                        👤 <span id="displayStudentName"></span>
+                    <div>
+                        <div class="user-chip">
+                            👤 <span id="dispName"></span>
+                        </div>
+                        <div class="college-chip" id="dispCollege"></div>
                     </div>
 
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-fill" id="progFill"></div>
                 </div>
             </div>
             <div class="exam-main">
-                <div class="exam-meta" id="pageCounter">QUESTIONS 1-5 / X</div>
+                <div class="exam-meta" id="pageCounter">QUESTIONS 1–5 / 400</div>
                 <div id="questionsContainer"></div>
             </div>
             <div class="nav-bar">
                 <div class="nav-inner">
-                    <button class="btn btn-ghost" id="prevBtn">← Previous Page</button>
-                    <button class="btn btn-primary" id="nextBtn">Next Page →</button>
-                    <button class="btn btn-danger hidden" id="submitBtn">Submit Exam</button>
+                    <button class="btn btn-ghost" id="prevBtn">← Previous</button>
+                    <button class="btn btn-primary" id="nextBtn">Next →</button>
+                    <button class="btn btn-danger hidden" id="submitBtn">✓ Submit Exam</button>
                 </div>
             </div>
         </div>
+        <!-- ═══════════════════════════════════════════════ RESULTS ═══ -->
         <div id="resultScreen" class="screen">
             <div class="exam-main">
                 <div class="score-hero">
-                    <h2 style="color:var(--text-dim); font-family:'DM Mono'; letter-spacing:2px;">EXECUTION COMPLETE</h2>
+                    <div style="font-family:'DM Mono';font-size:11px;letter-spacing:.2em;color:var(--text-muted);margin-bottom:10px;">EXAM COMPLETE — النتيجة النهائية</div>
                     <div class="score-pct" id="finalScore">0%</div>
-                    <p style="margin-top:10px; font-size:16px;">
-                        Candidate: <strong id="resultName" style="color:var(--neon-blue)"></strong>
-                    </p>
+                    <div class="score-grade" id="gradeLabel"></div>
+                    <div class="result-meta">
+                        <div class="result-meta-item">
+                            <div class="val" style="color:var(--neon-blue)" id="resName">—</div>
+                            <div class="lbl">Student</div>
+                        </div>
+                        <div class="result-meta-item">
+                            <div class="val" style="color:var(--text-dim)" id="resCollege">—</div>
+                            <div class="lbl">College</div>
+                        </div>
+                        <div class="result-meta-item">
+                            <div class="val" style="color:var(--neon-green)" id="resCorrect">0</div>
+                            <div class="lbl">Correct ✓</div>
+                        </div>
+                        <div class="result-meta-item">
+                            <div class="val" style="color:var(--danger)" id="resIncorrect">0</div>
+                            <div class="lbl">Incorrect ✗</div>
+                        </div>
 
-                    <div style="display:flex; justify-content:center; gap:20px; margin-top:20px;">
-                        <div style="color:var(--neon-green)">
-                            Correct: <span id="resultCorrect">0</span>
-                        </div>
-                        <div style="color:var(--danger)">
-                            Incorrect: <span id="resultIncorrect">0</span>
-                        </div>
                     </div>
-                    <div style="margin-top:30px; display:flex; gap:10px; justify-content:center;">
-                        <button class="btn btn-primary" id="retryBtn">Retry Exam</button>
-                        <button class="btn btn-ghost" id="logoutBtn">Log Out</button>
+                    <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                        <button class="btn btn-primary" id="retryBtn">↺ Retry Exam</button>
+                        <button class="btn btn-ghost" id="logoutBtn">↩ Log Out</button>
                     </div>
                 </div>
                 <div style="margin-top:20px;">
-                    <h3 style="font-family:'Syne'; color:var(--neon-blue);">📜 Previous Attempts</h3>
+                    <h3 style="font-family:'Syne';color:var(--neon-blue);margin-bottom:12px;">📜 Previous Attempts</h3>
                     <div id="historyContainer" class="history-list"></div>
+                </div>
+                <div class="credit" style="padding:20px 0 10px;">
+                    Designed &amp;Developed by <span style="color:var(--neon-purple);font-weight:600;">Karar Haider Kadhim</span>
                 </div>
             </div>
         </div>
         <script>
-            // ======================================================================
-            // ⬇️ PASTE YOUR 237 QUESTIONS IN THIS ARRAY ⬇️
-            // Keep the exact same format: { q: "...", opts: ["A","B","C","D"], a: "Correct" }
-            // ======================================================================
-            const rawQuestions = [// --- Network Security - Study Sheet (30 Questions) ---
-            {
+            // ─── CONFIG ──────────────────────────────────────────────────────────────────
+            const QUESTIONS_PER_PAGE = 5;
+
+
+            // ─── QUESTIONS ───────────────────────────────────────────────────────────────
+            const rawQuestions = [{
                 q: "Which security service is provided by ESP but NOT by AH?",
                 opts: ["Access control", "Confidentiality", "Message authentication", "Replay attack protection"],
                 a: "Confidentiality"
@@ -637,9 +914,7 @@
                 q: "Which public-domain IDS system is specifically mentioned as 'immensely popular'?",
                 opts: ["Wireshark", "nmap", "Snort", "iptables"],
                 a: "Snort"
-            },
-            // --- Computer Network Security-Practical Questions Bank (50 Questions) ---
-            {
+            }, {
                 q: "A company wants to ensure data is not altered during transmission. Which principle is this?",
                 opts: ["Authentication", "Availability", "Integrity", "Confidentiality"],
                 a: "Integrity"
@@ -839,9 +1114,7 @@
                 q: "Post-incident activity:",
                 opts: ["Lessons learned", "Disconnect network", "Delete data", "Ignore issue"],
                 a: "Lessons learned"
-            },
-            // --- Network Security MCQ - Answer Key (63 Questions) ---
-            {
+            }, {
                 q: "What is the primary distinction between data and information?",
                 opts: ["Data is digital; information is analog", "Data refers to raw facts; information is processed data enabling decisions", "Information is stored; data is transmitted", "Data is text only; information includes multimedia"],
                 a: "Data refers to raw facts; information is processed data enabling decisions"
@@ -1093,9 +1366,7 @@
                 q: "Which protocol operates at the Network layer in the TCP/IP suite?",
                 opts: ["TCP", "UDP", "FTP", "IP"],
                 a: "IP"
-            },
-            // --- Network Security - MCQss (94 Questions) ---
-            {
+            }, {
                 q: "What is the primary goal of network security?",
                 opts: ["Increase speed", "Protect data and resources", "Reduce cost", "Improve UI"],
                 a: "Protect data and resources"
@@ -1200,10 +1471,6 @@
                 opts: ["Encrypt data", "Monitor and control traffic", "Delete files", "Increase bandwidth"],
                 a: "Monitor and control traffic"
             }, {
-                q: "IDS stands for:",
-                opts: ["Internet Data System", "Intrusion Detection System", "Internal Data Service", "Integrated Data System"],
-                a: "Intrusion Detection System"
-            }, {
                 q: "IPS stands for:",
                 opts: ["Internet Protection Service", "Intrusion Prevention System", "Internal Processing System", "Integrated Protection System"],
                 a: "Intrusion Prevention System"
@@ -1211,10 +1478,6 @@
                 q: "Antivirus software protects against:",
                 opts: ["Hardware failure", "Malware", "Power loss", "Speed issues"],
                 a: "Malware"
-            }, {
-                q: "VPN provides:",
-                opts: ["Public access", "Secure communication", "Faster internet", "Free data"],
-                a: "Secure communication"
             }, {
                 q: "Phishing is:",
                 opts: ["Network attack", "Social engineering attack", "Hardware attack", "Physical attack"],
@@ -1471,102 +1734,828 @@
                 q: "During Transport Mode ESP operation, what must each intermediate router do - and NOT do - when forwarding an encrypted packet?",
                 opts: ["Decrypt the payload, verify authentication, re-encrypt, then forward", "Maintain a copy of the SA state to route encrypted packets correctly", "Examine and process the IP header plus any plaintext IP extension headers - but NOT examine the ciphertext", "Forward packets based solely on MAC address tables, ignoring the IP header"],
                 a: "Examine and process the IP header plus any plaintext IP extension headers - but NOT examine the ciphertext"
+            }, {
+                q: "When encrypted password is used, the sender knows _____.",
+                opts: ["password only", "secret key only", "encrypted password", "password and secret key"],
+                a: "password and secret key"
+            }, {
+                q: "A nonce is a number that a protocol will use _____.",
+                opts: ["only once in a lifetime", "more on time", "at randomly", "as integer"],
+                a: "only once in a lifetime"
+            }, {
+                q: "In protocol ap3.1, encryption of the password still fails because of:",
+                opts: ["Replay attack", "IP spoofing", "Packet loss", "DNS attack"],
+                a: "Replay attack"
+            }, {
+                q: "The transport layer at receiver side takes data from ____ layer.",
+                opts: ["Physical", "Data link", "Network", "Session"],
+                a: "Network"
+            }, {
+                q: "Audio differs from text data because it is:",
+                opts: ["Binary", "Discrete", "Noded", "Continuous"],
+                a: "Continuous"
+            }, {
+                q: "Mesh topology is rarely used in small networks because:",
+                opts: ["High complexity and cost", "Low performance", "Lack of reliability", "Limited scalability"],
+                a: "High complexity and cost"
+            }, {
+                q: "Encryption is mainly handled by:",
+                opts: ["Physical layer", "Presentation layer", "Data link layer", "Network layer"],
+                a: "Presentation layer"
+            }, {
+                q: "Fragmentation of packets is done at:",
+                opts: ["Transport", "Data link", "Physical", "Network"],
+                a: "Network"
+            }, {
+                q: "If two devices communicate without agreed rules, the main issue is:",
+                opts: ["Bandwidth", "Protocol absence", "Noise", "Addressing"],
+                a: "Protocol absence"
+            }, {
+                q: "Routing decisions are made at:",
+                opts: ["Network layer", "Data link layer", "Transport layer", "Session layer"],
+                a: "Network layer"
+            }, {
+                q: "The ___ layer is responsible for providing services to the user.",
+                opts: ["Application", "Presentation", "Session", "Transport"],
+                a: "Application"
+            }, {
+                q: "The transport layer at receiver side gives data to ___ layer.",
+                opts: ["Physical", "Data link", "Network", "Session"],
+                a: "Session"
+            }, {
+                q: "Network layer defines ___ addressing so that any endpoint can be identified.",
+                opts: ["Physical", "Logical", "Physical and logical", "Control"],
+                a: "Logical"
+            }, {
+                q: "Why is jitter critical in multimedia communication?",
+                opts: ["It increases bandwidth", "It affects synchronization", "It improves routing", "It encrypts data"],
+                a: "It affects synchronization"
+            }, {
+                q: "A system is unavailable due to an attack. Which CIA property is affected?",
+                opts: ["Availability", "Integrity", "Confidentiality", "Authorization"],
+                a: "Availability"
+            }, {
+                q: "Which layer handles logical addressing?",
+                opts: ["Data link", "Network", "Transport", "Session"],
+                a: "Network"
+            }, {
+                q: "In which topology does a single failure isolate the entire network?",
+                opts: ["Star (node failure)", "Bus (backbone failure)", "Mesh", "Hybrid"],
+                a: "Bus (backbone failure)"
+            }, {
+                q: "Which layer ensures no duplication of data?",
+                opts: ["Network", "Session", "Data link", "Transport"],
+                a: "Transport"
+            }, {
+                q: "A protocol ensures communication by defining:",
+                opts: ["Hardware only", "Software only", "Rules for data exchange", "Network topology"],
+                a: "Rules for data exchange"
+            }, {
+                q: "Bus topology uses:",
+                opts: ["Multiple cables", "Ring", "Star", "Single backbone cable"],
+                a: "Single backbone cable"
+            }, {
+                q: "IP spoofing occurs when:",
+                opts: ["Passwords are encrypted", "IP address is falsified", "Data is compressed", "Packets are lost"],
+                a: "IP address is falsified"
+            }, {
+                q: "In protocol ap3.1, authentication is based on:",
+                opts: ["IP address", "Encrypted Password", "Nonce", "Certificate"],
+                a: "Encrypted Password"
+            }, {
+                q: "Which protocol first attempts to fix password exposure by encryption?",
+                opts: ["ap1.0", "ap2.0", "ap3.0", "ap3.1"],
+                a: "ap3.1"
+            }, {
+                q: "What is the main goal of authentication?",
+                opts: ["Speed up communication", "Hide data", "Verify identity", "Store data"],
+                a: "Verify identity"
+            }, {
+                q: "What is the main flaw in protocol apl.0?",
+                opts: ["It is too slow", "No encryption", "No way to verify identity", "Uses wrong key"],
+                a: "No way to verify identity"
+            }, {
+                q: "The application layer of the OSI model is the ___ level.",
+                opts: ["Lowest", "Medium", "Second", "Highest"],
+                a: "Highest"
+            }, {
+                q: "Technical security concentrates on protecting data ___ the network.",
+                opts: ["stored within", "transmitted across", "stored within as well as transmitted across", "from external of"],
+                a: "stored within as well as transmitted across"
+            }, {
+                q: "Encryption makes data accessible ___ with the decryption key.",
+                opts: ["to all users", "to sender", "to receiver", "only to authorised user"],
+                a: "only to authorised user"
+            }, {
+                q: "The most fundamental level of network security is ___",
+                opts: ["Technical", "Administrative", "Physical", "Public"],
+                a: "Physical"
+            }, {
+                q: "Presentation layer handles",
+                opts: ["Data compression", "Data encryption", "Data sorting", "Data compression and data encryption"],
+                a: "Data compression and data encryption"
+            }, {
+                q: "Which layer handles error detection and retransmission?",
+                opts: ["Physical", "Data Link", "Network", "Session"],
+                a: "Data Link"
+            }, {
+                q: "ap1.0 flaw is:",
+                opts: ["No verification", "Delay", "Encryption", "Routing"],
+                a: "No verification"
+            }, {
+                q: "IP spoofing occurs in:",
+                opts: ["ap1.0", "ap3.0", "ap2.0", "ap4.0"],
+                a: "ap2.0"
+            }, {
+                q: "Data Link layer handles:",
+                opts: ["Routing", "Framing", "Encryption", "Sessions"],
+                a: "Framing"
+            }, {
+                q: "The network layer provides:",
+                opts: ["Encryption", "Compression", "Sessions", "Routing"],
+                a: "Routing"
+            }, {
+                q: "The transport layer ensures:",
+                opts: ["Routing", "Reliable delivery", "Encryption", "Compression"],
+                a: "Reliable delivery"
+            }, {
+                q: "Presentation layer handles:",
+                opts: ["Routing", "Transmission", "Addressing", "Encryption"],
+                a: "Encryption"
+            }, {
+                q: "Ring topology data flows:",
+                opts: ["Randomly", "Broadcast", "One direction", "Parallel"],
+                a: "One direction"
+            }, {
+                q: "Mesh topology is:",
+                opts: ["Cheap", "Highly reliable", "Simple", "Linear"],
+                a: "Highly reliable"
+            }, {
+                q: "OSI stands for:",
+                opts: ["Open Systems Interconnection", "Open System Interface", "Operating System Interface", "Optical System Integration"],
+                a: "Open Systems Interconnection"
+            }, {
+                q: "By encrypting the password, we can prevent ___ from learning the password.",
+                opts: ["Sender", "Receiver", "Attacker", "Attacker and receiver"],
+                a: "Attacker"
+            }, {
+                q: "The use of a ___ forms the basis of ap4.0.",
+                opts: ["Nonce", "Symmetric key cryptography", "Nonce and symmetric key cryptography", "Nonce and public key cryptography"],
+                a: "Nonce and public key cryptography"
+            }, {
+                q: "In protocol ap3.0, authentication is based on:",
+                opts: ["IP address", "Password", "Nonce", "Certificate"],
+                a: "Password"
+            }, {
+                q: "Which of the following is an example of authentication in real life?",
+                opts: ["Sending email", "Recognizing faces", "Writing a message", "Downloading files"],
+                a: "Recognizing faces"
+            }, {
+                q: "In ap4.0, what does Alice send back to Bob?",
+                opts: ["Password", "IP address", "Encrypted nonce", "Plain nonce"],
+                a: "Encrypted nonce"
+            }, {
+                q: "The network layer at sender side gives data to ___ layer.",
+                opts: ["Physical", "Data link", "Transport", "Session"],
+                a: "Data link"
+            }, {
+                q: "A hacker modifies data in transit. Which CIA property is violated?",
+                opts: ["Confidentiality", "Availability", "Integrity", "Authentication"],
+                a: "Integrity"
+            }, {
+                q: "Which component ensures data travels between sender and receiver?",
+                opts: ["Protocol", "Transmission medium", "Message", "Receiver"],
+                a: "Transmission medium"
+            }, {
+                q: "Why is bus topology prone to collisions?",
+                opts: ["Shared communication line", "Multiple paths exist", "Central hub", "Ring structure"],
+                a: "Shared communication line"
+            }, {
+                q: "What happens if the central hub fails in star topology?",
+                opts: ["Only one node fails", "Data loss occurs", "Entire network fails", "Nothing happens"],
+                a: "Entire network fails"
+            }, {
+                q: "Which layer ensures ordered delivery of data?",
+                opts: ["Network", "Session", "Physical", "Transport"],
+                a: "Transport"
+            }, {
+                q: "TCP/IP is considered hierarchical because:",
+                opts: ["It uses layers", "Each layer depends on lower layers", "It uses routing", "It uses encryption"],
+                a: "Each layer depends on lower layers"
+            }, {
+                q: "What does VPN stand for?",
+                opts: ["Virtual Public Network", "Virtual Private Network", "Variable Private Network", "Verified Public Network"],
+                a: "Virtual Private Network"
+            }, {
+                q: "Timeliness is important for:",
+                opts: ["Text", "Audio/Video", "Images", "Numbers"],
+                a: "Audio/Video"
+            }, {
+                q: "The transmission medium can be:",
+                opts: ["Wired only", "Wireless only", "Both", "None"],
+                a: "Both"
+            }, {
+                q: "ASCII is used for:",
+                opts: ["Text", "Images", "Audio", "Video"],
+                a: "Text"
+            }, {
+                q: "Physical layer deals with:",
+                opts: ["Packets", "Frames", "Bits", "Messages"],
+                a: "Bits"
+            }, {
+                q: "Application layer provides:",
+                opts: ["Hardware interface", "User services", "Data transmission", "Voltage control"],
+                a: "User services"
+            }, {
+                q: "Data Communication is a process of exchanging",
+                opts: ["Data", "Information", "Data or information", "Message"],
+                a: "Message"
+            }, {
+                q: "The main objective of data communication and networking is to enable seamless exchange of data ___ in the world.",
+                opts: ["between any two points", "for only one point", "for many points", "between wireless points"],
+                a: "between any two points"
+            }, {
+                q: "End-point authentication is the process of one entity proving its identity to ___ over a computer network.",
+                opts: ["Two entities", "Another entity", "All entities", "Some entities"],
+                a: "Another entity"
+            }, {
+                q: "Authentication must be done solely on the basis of messages and data exchanged ___",
+                opts: ["through network", "between sender and receiver", "as part of protocol", "at reliability"],
+                a: "as part of protocol"
+            }, {
+                q: "The authentication protocol ___ is one where sender simply sends a message to receiver saying 'I am [name]'.",
+                opts: ["ap 1.0", "ap 2.0", "ap 3.0", "ap 4.0"],
+                a: "ap 1.0"
+            }, {
+                q: "___ must be verified by receiver on the IP datagram — it must match sender's well-known address.",
+                opts: ["Source address", "Destination address", "IP datagram address", "Source and destination addresses"],
+                a: "Source address"
+            }, {
+                q: "The password ___ between the authenticator and the person being authenticated.",
+                opts: ["must be transmitted", "it offered", "is a shared", "is a shared secret"],
+                a: "is a shared secret"
+            }, {
+                q: "The original TCP/IP protocol suite was defined as four software layers built upon the ___",
+                opts: ["Hardware", "Software", "Hardware with software", "Protocols"],
+                a: "Hardware"
+            }, {
+                q: "The application layer in TCP/IP is usually considered to be the ___ in the OSI model.",
+                opts: ["combination of two layers", "combination of three layers", "one layer", "simpler layer"],
+                a: "combination of three layers"
+            }, {
+                q: "Computer network security focuses on ensuring ___ of network resources.",
+                opts: ["Confidentiality", "Integrity", "Availability", "All of above"],
+                a: "All of above"
+            }, {
+                q: "___ layer ensures data units are delivered error-free and in sequence.",
+                opts: ["Data link", "Network", "Transport", "Session"],
+                a: "Transport"
+            }, {
+                q: "No loss or duplication of data units is ensured at ___ layer.",
+                opts: ["Physical", "Data link", "Network", "Transport"],
+                a: "Transport"
+            }, {
+                q: "The transport layer is responsible for the delivery of a message from ___",
+                opts: ["source to destination", "one process to another", "one point to another", "one point to all other points"],
+                a: "one process to another"
+            }, {
+                q: "Session layer requests for a ___ to be established on an end-user's request.",
+                opts: ["logical connection", "physical connection", "point-to-point connection", "connectionless"],
+                a: "logical connection"
+            }, {
+                q: "Any necessary log-on or password validation is handled by ___ layer.",
+                opts: ["Application", "Presentation", "Session", "Transport"],
+                a: "Session"
+            }, {
+                q: "The network layer at sender side takes data from ___ layer.",
+                opts: ["Physical", "Data link", "Transport", "Session"],
+                a: "Transport"
+            }, {
+                q: "Which factor directly affects 'accuracy' in data communication?",
+                opts: ["Transmission medium noise", "Number of users", "Network topology", "Protocol type"],
+                a: "Transmission medium noise"
+            }, {
+                q: "Which component ensures interpretation of exchanged data?",
+                opts: ["Protocol", "Medium", "Sender", "Receiver"],
+                a: "Protocol"
+            }, {
+                q: "Which scenario violates confidentiality?",
+                opts: ["Unauthorized access", "Data modified", "Service unavailable", "Packet loss"],
+                a: "Unauthorized access"
+            }, {
+                q: "Which mechanism ensures integrity?",
+                opts: ["Encryption", "Hashing", "Routing", "Compression"],
+                a: "Hashing"
+            }, {
+                q: "Which layer divides data into smaller packets and chooses the best path?",
+                opts: ["Data Link", "Network", "Transport", "Session"],
+                a: "Network"
+            }, {
+                q: "Which layer provides checkpointing?",
+                opts: ["Transport", "Session", "Presentation", "Application"],
+                a: "Session"
+            }, {
+                q: "When you find your test marks - that lets you know whether you passed or failed. This is an example of:",
+                opts: ["information", "facts", "data", "knowledge"],
+                a: "information"
+            }, {
+                q: "A communication system is made up of",
+                opts: ["hardware", "software", "hardware and software", "devices"],
+                a: "hardware and software"
+            }, {
+                q: "The ___ involves certain rules specifying what is to be communicated, how, and when.",
+                opts: ["Protocol", "procedure", "communication", "networking"],
+                a: "Protocol"
+            }, {
+                q: "___ is the variation in the packet arrival time.",
+                opts: ["Timeliness", "Accuracy", "Delivery", "Jitter"],
+                a: "Jitter"
+            }, {
+                q: "___ means audio and video data must be delivered in a timely manner without any delay.",
+                opts: ["Delivery", "Timeliness", "Jitter", "Accuracy"],
+                a: "Timeliness"
+            }, {
+                q: "For network security, its services remain ___",
+                opts: ["available and reliable", "reliable", "available", "not always available and reliable"],
+                a: "available and reliable"
+            }, {
+                q: "Administrative security addresses ___ that govern user behavior and access rights.",
+                opts: ["procedures", "policies", "access control", "policies and procedures"],
+                a: "policies and procedures"
+            }, {
+                q: "Application security protects software applications from _____.",
+                opts: ["all users", "threats", "vulnerabilities", "threats and vulnerabilities"],
+                a: "threats and vulnerabilities"
+            }, {
+                q: "Web security protects ___ from cyber threats.",
+                opts: ["websites and web applications", "web applications", "websites", "none of the above"],
+                a: "websites and web applications"
+            }, {
+                q: "Network security refers to policies and practices such as _____.",
+                opts: ["IDS/IPS systems", "network segmentation", "traffic monitoring", "all of above"],
+                a: "all of above"
+            }, {
+                q: "The AH protocol ___ provide confidentiality.",
+                opts: ["does not", "does", "rarely does", "rarely does not"],
+                a: "does not"
+            }, {
+                q: "IPSec helps create ___ for the IP layer.",
+                opts: ["authenticated and confidential packets", "confidential packets", "authenticated packets", "reliability packets"],
+                a: "authenticated and confidential packets"
+            }, {
+                q: "Computer network security mainly focuses on protecting:",
+                opts: ["Network cables only", "Infrastructure and data from unauthorized access", "Operating systems only", "Internet browsers"],
+                a: "Infrastructure and data from unauthorized access"
+            }, {
+                q: "Which technology converts data into unreadable form to protect it?",
+                opts: ["Firewall", "Encryption", "VPN", "Authentication"],
+                a: "Encryption"
+            }, {
+                q: "Which tool detects and removes malicious software?",
+                opts: ["Firewall", "Antivirus", "VPN", "Router"],
+                a: "Antivirus"
+            }, {
+                q: "Which of the following protects websites from cyber threats?",
+                opts: ["Web security", "Network topology", "Routing protocols", "Packet switching"],
+                a: "Web security"
+            }, {
+                q: "Which encryption protocol is used to secure websites?",
+                opts: ["HTTP", "HTTPS", "FTP", "Telnet"],
+                a: "HTTPS"
+            }, {
+                q: "A major challenge in modern network security arises because:",
+                opts: ["Networks include IoT and cloud systems increasing vulnerabilities", "Encryption is no longer used", "Firewalls are outdated", "Networks no longer use LANs"],
+                a: "Networks include IoT and cloud systems increasing vulnerabilities"
+            }, {
+                q: "Data communication is the process of:",
+                opts: ["Storing data", "Encrypting data", "Exchanging data between devices", "Compressing data"],
+                a: "Exchanging data between devices"
+            }, {
+                q: "What does jitter refer to in data communication?",
+                opts: ["Packet loss", "Variation in packet arrival time", "Packet size", "Network bandwidth"],
+                a: "Variation in packet arrival time"
+            }, {
+                q: "The path used to transmit data from sender to receiver is called:",
+                opts: ["Transmission Medium", "Protocol", "Router", "Frame"],
+                a: "Transmission Medium"
+            }, {
+                q: "A protocol is defined as:",
+                opts: ["Hardware device", "Set of communication rules", "Storage system", "Encryption method"],
+                a: "Set of communication rules"
+            }, {
+                q: "Which topology connects every device to every other device?",
+                opts: ["Bus", "Mesh", "Ring", "Tree"],
+                a: "Mesh"
+            }, {
+                q: "Hybrid topology is:",
+                opts: ["Combination of multiple topologies", "Only wireless network", "Only star topology", "Only mesh topology"],
+                a: "Combination of multiple topologies"
+            }, {
+                q: "In TCP/IP, which OSI layers are combined into the Application layer?",
+                opts: ["Network and Transport", "Session, Presentation, and Application", "Physical and Data Link", "Network and Physical"],
+                a: "Session, Presentation, and Application"
+            }, {
+                q: "Data refers to that are collected.",
+                opts: ["only facts", "the raw objects", "the raw facts", "only objects"],
+                a: "the raw facts"
+            }, {
+                q: "Message is the ___ to be communicated by the sender to the receiver.",
+                opts: ["data", "information", "object", "thing"],
+                a: "data"
+            }, {
+                q: "Data in communications may be represented as",
+                opts: ["numbers", "text", "image or audio", "all of above"],
+                a: "all of above"
+            }, {
+                q: "Tree topology is",
+                opts: ["Scalable", "Flexible", "Ideal for growing organizations", "All of above"],
+                a: "All of above"
+            }, {
+                q: "The Physical layer is responsible for:",
+                opts: ["Data encryption", "Moving bits", "Routing", "Error detection"],
+                a: "Moving bits"
+            }, {
+                q: "Why is ESP preferred over AH?",
+                opts: ["Simpler", "Provides confidentiality", "Faster", "Cheaper"],
+                a: "Provides confidentiality"
+            }, {
+                q: "IPsec secures IP datagrams between any two network-layer entities, including",
+                opts: ["only hosts", "only routers", "hosts and routers"],
+                a: "hosts and routers"
+            }, {
+                q: "What does AH protocol provide?",
+                opts: ["Confidentiality only", "Authentication and integrity", "Encryption only", "Routing"],
+                a: "Authentication and integrity"
+            }, {
+                q: "What is a weakness of traditional packet filters?",
+                opts: ["Too fast", "Cannot track connections", "Cannot read headers", "Too complex"],
+                a: "Cannot track connections"
+            }, {
+                q: "Stateful firewall differs from packet filter by:",
+                opts: ["Tracking connections", "Speed", "Encryption", "Compression"],
+                a: "Tracking connections"
+            }, {
+                q: "VPN reduces cost by:",
+                opts: ["Using public Internet securely", "Using private network", "Removing encryption", "Reducing users"],
+                a: "Using public Internet securely"
+            }, {
+                q: "Wireless security offers",
+                opts: ["WPA3 encryption", "Secure SSID configuration", "MAC address filtering", "All of above"],
+                a: "All of above"
+            }, {
+                q: "In a VPN with HQ, one branch, and n traveling salespersons, the total number of SAs is:",
+                opts: ["n", "2n", "2 + 2n", "4n + 1"],
+                a: "2 + 2n"
+            }, {
+                q: "The main purpose of the ESP Sequence Number field is to:",
+                opts: ["Store key length", "Identify router interface", "Help order/protect packets against replay", "Indicate packet size", "Select TCP port"],
+                a: "Help order/protect packets against replay"
+            }, {
+                q: "Which IPsec mode encrypts the entire original IP packet?",
+                opts: ["Bridge mode", "Transport mode", "Tunnel mode", "Passive mode", "Learning mode"],
+                a: "Tunnel mode"
+            }, {
+                q: "If two IPsec entities need secure communication in both directions, they must establish:",
+                opts: ["1 SA", "2 SAs", "3 SAs", "4 SAs", "No SA is needed"],
+                a: "2 SAs"
+            }, {
+                q: "Compared with AH, ESP is more widely used mainly because ESP provides:",
+                opts: ["Only compression", "Confidentiality", "Only fragmentation", "Address translation", "Broadcast support"],
+                a: "Confidentiality"
+            }, {
+                q: "A major drawback of transport mode ESP is that it may still allow:",
+                opts: ["Key exchange failure", "DNS poisoning", "MAC spoofing inside ciphertext", "Traffic analysis", "ARP table overflow"],
+                a: "Traffic analysis"
+            }, {
+                q: "Which field in ESP may vary from 0 to 255 bytes and is used for alignment?",
+                opts: ["SPI", "Padding", "Authentication Data", "Next Header", "TTL"],
+                a: "Padding"
+            }, {
+                q: "IPSec operates primarily at which OSI/TCP-IP level?",
+                opts: ["Application layer", "Transport layer", "Network/IP layer", "Session layer", "Presentation layer"],
+                a: "Network/IP layer"
+            }, {
+                q: "Tunnel mode ESP is especially useful when security is provided by:",
+                opts: ["Only end-user applications", "A firewall or security gateway protecting a trusted network", "Bluetooth heads", "A printer driver", "A standalone spreadsheet"],
+                a: "A firewall or security gateway protecting a trusted network"
+            }, {
+                q: "Which best represents the three functional areas emphasized for IPSec?",
+                opts: ["Compression, caching, and routing", "Hashing, coding, and multiplexing", "Switching, queuing, and forwarding", "Addressing, subnetting, and NAT", "Authentication, confidentiality, and key management"],
+                a: "Authentication, confidentiality, and key management"
+            }, {
+                q: "A Security Association (SA) in IPSec is best described as:",
+                opts: ["A bidirectional physical link", "A simple logical connection", "A transport-layer socket", "A shared DNS session", "A routing table entry"],
+                a: "A simple logical connection"
+            }, {
+                q: "What is the main purpose of IKE in IPSec?",
+                opts: ["Data compression", "Key management", "Packet routing", "Error detection", "Bandwidth allocation"],
+                a: "Key management"
+            }, {
+                q: "Manual keying in IPSec is impractical because:",
+                opts: ["It is insecure", "It requires encryption", "It does not scale well", "It is too fast", "It lacks authentication"],
+                a: "It does not scale well"
+            }, {
+                q: "IKE is defined in which RFC?",
+                opts: ["RFC 791", "RFC 2460", "RFC 5996", "RFC 1035", "RFC 768"],
+                a: "RFC 5996"
+            }, {
+                q: "IKE is similar to which protocol handshake?",
+                opts: ["SSL", "DNS", "FTP", "HTTP", "SMTP"],
+                a: "SSL"
+            }, {
+                q: "What is exchanged between entities in IKE?",
+                opts: ["IP addresses", "Certificates", "MAC addresses", "Packets", "Ports"],
+                a: "Certificates"
+            }, {
+                q: "In Phase 1 of IKE, what is created?",
+                opts: ["IKE SA", "TCP session", "UDP tunnel", "VPN gateway", "Routing table"],
+                a: "IKE SA"
+            }, {
+                q: "Which algorithm is used in Phase 1 for key exchange?",
+                opts: ["AES", "RSA", "Diffie-Hellman", "SHA-1", "MD5"],
+                a: "Diffie-Hellman"
+            }, {
+                q: "Phase 2 of IKE creates:",
+                opts: ["One SA", "Two SAs (bidirectional)", "Three SAs", "No SA", "Temporary session"],
+                a: "Two SAs (bidirectional)"
+            }, {
+                q: "Why does IKE use two phases?",
+                opts: ["Reduce latency", "Improve routing", "Reduce computational cost", "Increase bandwidth", "Avoid encryption"],
+                a: "Reduce computational cost"
+            }, {
+                q: "What is the role of master secret in IKE?",
+                opts: ["Encrypt packets directly", "Generate IPSec keys", "Store IP addresses", "Authenticate users", "Route traffic"],
+                a: "Generate IPSec keys"
+            }, {
+                q: "What is a firewall?",
+                opts: ["Routing protocol", "Hardware/software security system", "Encryption algorithm", "Database system", "VPN tunnel"],
+                a: "Hardware/software security system"
+            }, {
+                q: "Firewalls are placed:",
+                opts: ["Inside CPU", "Between networks", "In databases", "In switches only", "In applications"],
+                a: "Between networks"
+            }, {
+                q: "Which of the following is NOT a firewall goal?",
+                opts: ["Allow authorized traffic", "Block unauthorized traffic", "Ensure firewall is secure", "Increase CPU speed", "Monitor traffic"],
+                a: "Increase CPU speed"
+            }, {
+                q: "Which best describes the relationship between IKE SA and IPsec SA?",
+                opts: ["They are identical and interchangeable", "IPsec SA replaces IKE SA entirely", "IPsec SA establishes IKE SA", "Both operate independently", "IKE SA is used to secure IPsec SA negotiation"],
+                a: "IKE SA is used to secure IPsec SA negotiation"
+            }, {
+                q: "What attack makes ap2.0 insecure?",
+                opts: ["Replay attack", "IP spoofing", "Brute force", "Phishing", "DoS"],
+                a: "IP spoofing"
+            }, {
+                q: "IP spoofing allows an attacker to:",
+                opts: ["Encrypt data", "Modify routing tables", "Fake source IP address", "Destroy packets", "Block communication"],
+                a: "Fake source IP address"
+            }, {
+                q: "What is used in protocol ap3.0?",
+                opts: ["Nonce", "Digital signature", "Secret password", "Token ID", "Hash function"],
+                a: "Secret password"
+            }, {
+                q: "Why is ap3.0 insecure?",
+                opts: ["Slow processing", "Password sent in plaintext", "Requires encryption", "Needs hardware", "Uses nonce"],
+                a: "Password sent in plaintext"
+            }, {
+                q: "What is a nonce?",
+                opts: ["Secret password", "Random key", "Number used once", "Hash value", "IP address"],
+                a: "Number used once"
+            }, {
+                q: "Protocol ap4.0 prevents:",
+                opts: ["Spoofing only", "Replay attacks", "Encryption errors", "Routing loops", "Packet loss"],
+                a: "Replay attacks"
+            }, {
+                q: "What is IPsec used for?",
+                opts: ["Application security", "Transport layer security", "Network layer security", "Physical layer security", "Data compression"],
+                a: "Network layer security"
+            }, {
+                q: "IPsec provides:",
+                opts: ["Only encryption", "Only routing", "Confidentiality, integrity, authentication", "Only authentication", "Only compression"],
+                a: "Confidentiality, integrity, authentication"
+            }, {
+                q: "What is a VPN?",
+                opts: ["Physical network", "Public network", "Secure virtual network over Internet", "Wireless protocol", "Routing protocol"],
+                a: "Secure virtual network over Internet"
+            }, {
+                q: "Why are VPNs used?",
+                opts: ["Increase speed", "Reduce cost", "Provide secure communication", "Replace routers", "Compress data"],
+                a: "Provide secure communication"
+            }, {
+                q: "A private network is:",
+                opts: ["Public Internet", "Dedicated physical network", "Wireless LAN", "Cloud service", "VPN only"],
+                a: "Dedicated physical network"
+            }, {
+                q: "VPN traffic is:",
+                opts: ["Unencrypted", "Compressed", "Encrypted over Internet", "Routed only", "Broadcasted"],
+                a: "Encrypted over Internet"
+            }, {
+                q: "In VPN, who encrypts outgoing data?",
+                opts: ["End user", "Router/gateway", "Switch", "Server only", "ISP"],
+                a: "Router/gateway"
+            }, {
+                q: "What happens at the receiver in VPN?",
+                opts: ["Data is decrypted", "Data is encrypted", "Data is routed", "Data is compressed", "Data is delivered unprocessed"],
+                a: "Data is decrypted"
+            }, {
+                q: "What type of coverage does network-layer security provide?",
+                opts: ["Partial coverage", "No coverage", "Blanket coverage", "Physical coverage", "Limited coverage"],
+                a: "Blanket coverage"
+            }, {
+                q: "The ESP protocol _____ provide confidentiality.",
+                opts: ["Does not", "Does", "Rarely does", "Rarely does not"],
+                a: "Does"
+            }, {
+                q: "How many phases does IKE have?",
+                opts: ["1", "2", "3", "4"],
+                a: "2"
+            }, {
+                q: "Which of the following best describes network threat objectives?",
+                opts: ["Improving data storage", "Spying, disruption, or financial gain", "Increasing network speed", "Expanding network infrastructure"],
+                a: "Spying, disruption, or financial gain"
+            }, {
+                q: "Tree topology is requiring more _____ compared to simpler topologies.",
+                opts: ["Cabling", "Hardware", "Cabling and hardware", "Setup"],
+                a: "Cabling and hardware"
+            }, {
+                q: "_____, and many other services use password authentication.",
+                opts: ["Http", "UDP", "Gmail, Facebook, Telnet, FTP and other", "Facebook"],
+                a: "Gmail, Facebook, Telnet, FTP and other"
+            }, {
+                q: "For educational campuses, _____ topology is often used.",
+                opts: ["Bus", "Mesh", "Ring", "Tree"],
+                a: "Tree"
+            }, {
+                q: "For OSI model, message data has trailer at _____ layer.",
+                opts: ["Physical", "Data link", "Network", "Transport"],
+                a: "Data link"
+            }, {
+                q: "Blocking incoming packets with ACK = 0 prevents:",
+                opts: ["Internal connections", "External connection initiation", "DNS traffic", "UDP traffic"],
+                a: "External connection initiation"
+            }, {
+                q: "What is a key difference between AH and ESP regarding authentication?",
+                opts: ["AH includes parts of IP header in authentication, ESP does not", "AH encrypts data while ESP does not", "ESP includes IP header in authentication, AH does not", "Both include full IP header"],
+                a: "AH includes parts of IP header in authentication, ESP does not"
             }];
 
-            // ======================================================================
-            // ENGINE CONFIGURATION
-            // ======================================================================
-            const QUESTIONS_PER_PAGE = 5;
-
+            // ─── STATE ───────────────────────────────────────────────────────────────────
             let state = {
                 studentName: '',
+                studentCollege: '',
+                studentEmail: '',
                 questions: [],
                 answers: {},
                 currentPage: 0
             };
 
-            const el = {
-                login: document.getElementById('loginScreen'),
-                exam: document.getElementById('examScreen'),
-                result: document.getElementById('resultScreen'),
-                nameInput: document.getElementById('studentNameInput'),
-                startBtn: document.getElementById('startBtn'),
-                dispName: document.getElementById('displayStudentName'),
-                pageCount: document.getElementById('pageCounter'),
-                progFill: document.getElementById('progressFill'),
-                container: document.getElementById('questionsContainer'),
-                prevBtn: document.getElementById('prevBtn'),
-                nextBtn: document.getElementById('nextBtn'),
-                submitBtn: document.getElementById('submitBtn')
+            // ─── DOM REFS ────────────────────────────────────────────────────────────────
+            const S = id => document.getElementById(id);
+            const screens = {
+                login: S('loginScreen'),
+                exam: S('examScreen'),
+                result: S('resultScreen')
             };
 
+            // ─── UTILITIES ───────────────────────────────────────────────────────────────
             function shuffle(arr) {
                 let ci = arr.length, ri;
-                while (ci !== 0) {
-                    ri = Math.floor(Math.random() * ci);
-                    ci--;
+                while (ci) {
+                    ri = Math.floor(Math.random() * ci--);
                     [arr[ci],arr[ri]] = [arr[ri], arr[ci]];
                 }
                 return arr;
             }
+            function show(screen) {
+                Object.values(screens).forEach(s => s.classList.remove('active'));
+                screen.classList.add('active');
+            }
+            function toast(msg, color='var(--neon-green)') {
+                const t = document.createElement('div');
+                t.className = 'toast';
+                t.style.borderColor = color;
+                t.textContent = msg;
+                document.body.appendChild(t);
+                setTimeout( () => t.remove(), 3000);
+            }
+            function gradeLabel(pct) {
+                if (pct >= 90)
+                    return {
+                        text: 'Excellent — ممتاز 🏆',
+                        color: 'var(--neon-green)'
+                    };
+                if (pct >= 80)
+                    return {
+                        text: 'Very Good — جيد جداً ⭐',
+                        color: 'var(--neon-blue)'
+                    };
+                if (pct >= 70)
+                    return {
+                        text: 'Good — جيد 👍',
+                        color: 'var(--accent-2)'
+                    };
+                if (pct >= 60)
+                    return {
+                        text: 'Pass — مقبول 📘',
+                        color: 'var(--warning)'
+                    };
+                return {
+                    text: 'Fail — راسب — حاول مجدداً 📚',
+                    color: 'var(--danger)'
+                };
+            }
 
-            // Start Exam
-            el.startBtn.onclick = () => {
-                const n = el.nameInput.value.trim();
-                if (!n)
-                    return alert("Enter credentials.");
+            // ─── VALIDATION ──────────────────────────────────────────────────────────────
+            function validateForm() {
+                const name = S('inputName').value.trim();
+                const college = S('inputCollege').value.trim();
+                const email = S('inputEmail').value.trim();
+                let ok = true;
 
-                let pool = JSON.parse(JSON.stringify(rawQuestions));
-                pool = shuffle(pool);
+                [['inputName', 'errName', name], ['inputCollege', 'errCollege', college]].forEach( ([inp,err,val]) => {
+                    if (!val) {
+                        S(inp).classList.add('error');
+                        S(err).classList.add('show');
+                        ok = false;
+                    } else {
+                        S(inp).classList.remove('error');
+                        S(err).classList.remove('show');
+                    }
+                }
+                );
+
+                const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                if (!email || !emailOk) {
+                    S('inputEmail').classList.add('error');
+                    S('errEmail').classList.add('show');
+                    ok = false;
+                } else {
+                    S('inputEmail').classList.remove('error');
+                    S('errEmail').classList.remove('show');
+                }
+
+                return ok ? {
+                    name,
+                    college,
+                    email
+                } : null;
+            }
+
+            // ─── START ───────────────────────────────────────────────────────────────────
+            S('startBtn').onclick = () => {
+                const fields = validateForm();
+                if (!fields)
+                    return;
+
+                const pool = shuffle(JSON.parse(JSON.stringify(rawQuestions)));
                 pool.forEach(q => {
                     q.opts = shuffle(q.opts);
                 }
                 );
 
-                state.studentName = n;
+                state.studentName = fields.name;
+                state.studentCollege = fields.college;
+                state.studentEmail = fields.email;
                 state.questions = pool;
                 state.answers = {};
                 state.currentPage = 0;
 
+                S('dispName').textContent = fields.name;
+                S('dispCollege').textContent = fields.college;
 
-                el.login.classList.remove('active');
-                el.exam.classList.add('active');
-                el.dispName.textContent = n;
-
-
+                show(screens.exam);
                 renderPage();
             }
             ;
 
+            // ─── TIMER ───────────────────────────────────────────────────────────────────
 
 
+            // ─── RENDER PAGE ─────────────────────────────────────────────────────────────
             function renderPage() {
-                el.container.innerHTML = '';
+                const container = S('questionsContainer');
+                container.innerHTML = '';
                 window.scrollTo({
                     top: 0,
                     behavior: 'smooth'
                 });
 
-                const startIdx = state.currentPage * QUESTIONS_PER_PAGE;
-                const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, state.questions.length);
+                const start = state.currentPage * QUESTIONS_PER_PAGE;
+                const end = Math.min(start + QUESTIONS_PER_PAGE, state.questions.length);
                 const totalPages = Math.ceil(state.questions.length / QUESTIONS_PER_PAGE);
 
-                el.pageCount.textContent = `QUESTIONS ${startIdx + 1}-${endIdx} / ${state.questions.length}`;
-                el.progFill.style.width = `${((state.currentPage + 1) / totalPages) * 100}%`;
+                S('pageCounter').textContent = `QUESTIONS ${start + 1}–${end} / ${state.questions.length}`;
+                S('progFill').style.width = `${((state.currentPage + 1) / totalPages) * 100}%`;
 
-                // Generate 5 cards
-                for (let i = startIdx; i < endIdx; i++) {
+                for (let i = start; i < end; i++) {
                     const q = state.questions[i];
                     const userAns = state.answers[i];
-
-                    // Staggered animation delay based on position on the page
-                    const delay = (i - startIdx) * 0.1;
-
                     const card = document.createElement('div');
                     card.className = 'q-card';
-                    card.style.animationDelay = `${delay}s`;
+                    card.style.animationDelay = `${(i - start) * 0.08}s`;
+                    card.innerHTML = `<div class="q-text"><span style="color:var(--neon-blue);font-family:'DM Mono';font-size:13px;">Q${i + 1}</span><br>${q.q}</div>`;
 
-                    card.innerHTML = `<div class="q-text"><span style="color:var(--neon-blue)">Q${i + 1}.</span> ${q.q}</div>`;
                     const optsDiv = document.createElement('div');
                     optsDiv.className = 'opts';
 
@@ -1574,7 +2563,6 @@
                         const btn = document.createElement('button');
                         btn.className = 'opt-btn';
                         btn.textContent = opt;
-
                         if (userAns) {
                             btn.disabled = true;
                             if (opt === q.a)
@@ -1593,81 +2581,75 @@
                     if (userAns) {
                         const fb = document.createElement('div');
                         fb.className = 'feedback-msg';
-                        if (userAns === q.a)
-                            fb.innerHTML = `<span style="color:var(--neon-green)">✓ Correct</span>`;
-                        else
-                            fb.innerHTML = `<span style="color:var(--danger)">✕ Incorrect.</span> Correct: <span style="color:var(--neon-green)">${q.a}</span>`;
+                        fb.innerHTML = userAns === q.a ? `<span style="color:var(--neon-green)">✓ Correct — إجابة صحيحة</span>` : `<span style="color:var(--danger)">✗ Incorrect</span> &nbsp;·&nbsp; Correct answer: <span style="color:var(--neon-green)">${q.a}</span>`;
                         card.appendChild(fb);
                     }
 
-                    el.container.appendChild(card);
+                    container.appendChild(card);
                 }
 
-                // Nav Buttons
-                el.prevBtn.disabled = state.currentPage === 0;
-                if (state.currentPage === totalPages - 1) {
-                    el.nextBtn.classList.add('hidden');
-                    el.submitBtn.classList.remove('hidden');
-                } else {
-                    el.nextBtn.classList.remove('hidden');
-                    el.submitBtn.classList.add('hidden');
-                }
+                const prevBtn = S('prevBtn');
+                const nextBtn = S('nextBtn');
+                const submitBtn = S('submitBtn');
+
+                prevBtn.disabled = state.currentPage === 0;
+                const isLast = state.currentPage === totalPages - 1;
+                nextBtn.classList.toggle('hidden', isLast);
+                submitBtn.classList.toggle('hidden', !isLast);
             }
 
-            // Immediate Feedback DOM update (no full re-render)
-            function handleAnswer(qIndex, selectedOpt, cardElement, correctOpt) {
-                if (state.answers[qIndex])
+            // ─── ANSWER ──────────────────────────────────────────────────────────────────
+            function handleAnswer(qIdx, selected, cardEl, correct) {
+                if (state.answers[qIdx])
                     return;
-                state.answers[qIndex] = selectedOpt;
+                state.answers[qIdx] = selected;
 
-                const btns = cardElement.querySelectorAll('.opt-btn');
-                btns.forEach(btn => {
+                cardEl.querySelectorAll('.opt-btn').forEach(btn => {
                     btn.disabled = true;
-                    if (btn.textContent === correctOpt)
+                    if (btn.textContent === correct)
                         btn.classList.add('correct-imm');
-                    else if (btn.textContent === selectedOpt)
+                    else if (btn.textContent === selected)
                         btn.classList.add('incorrect-imm');
                 }
                 );
 
                 const fb = document.createElement('div');
                 fb.className = 'feedback-msg';
-                if (selectedOpt === correctOpt)
-                    fb.innerHTML = `<span style="color:var(--neon-green)">✓ Correct</span>`;
-                else
-                    fb.innerHTML = `<span style="color:var(--danger)">✕ Incorrect.</span> Correct: <span style="color:var(--neon-green)">${correctOpt}</span>`;
-                cardElement.appendChild(fb);
+                fb.innerHTML = selected === correct ? `<span style="color:var(--neon-green)">✓ Correct — إجابة صحيحة</span>` : `<span style="color:var(--danger)">✗ Incorrect</span> &nbsp;·&nbsp; Correct answer: <span style="color:var(--neon-green)">${correct}</span>`;
+                cardEl.appendChild(fb);
             }
 
-            el.prevBtn.onclick = () => {
+            // ─── NAV ─────────────────────────────────────────────────────────────────────
+            S('prevBtn').onclick = () => {
                 if (state.currentPage > 0) {
                     state.currentPage--;
                     renderPage();
                 }
             }
             ;
-            el.nextBtn.onclick = () => {
-                if (state.currentPage < Math.ceil(state.questions.length / QUESTIONS_PER_PAGE) - 1) {
+            S('nextBtn').onclick = () => {
+                const totalPages = Math.ceil(state.questions.length / QUESTIONS_PER_PAGE);
+                if (state.currentPage < totalPages - 1) {
                     state.currentPage++;
                     renderPage();
                 }
             }
             ;
-
-            el.submitBtn.onclick = () => {
+            S('submitBtn').onclick = () => {
                 const answered = Object.keys(state.answers).length;
-                if (answered < state.questions.length) {
-                    if (!confirm(`You missed ${state.questions.length - answered} questions. Submit anyway?`))
-                        return;
-                }
+                const missed = state.questions.length - answered;
+                if (missed > 0 && !confirm(`لديك ${missed} سؤال لم تُجب عليه. هل تريد التسليم؟\n(${missed} unanswered questions — submit anyway?)`))
+                    return;
                 submitExam();
             }
             ;
 
+            // ─── SUBMIT ──────────────────────────────────────────────────────────────────
             function submitExam() {
+
+
                 let correct = 0
                   , incorrect = 0;
-
                 state.questions.forEach( (q, i) => {
                     if (state.answers[i] === q.a)
                         correct++;
@@ -1678,52 +2660,118 @@
 
                 const pct = Math.round((correct / state.questions.length) * 100);
 
-                document.getElementById('finalScore').textContent = `${pct}%`;
-                document.getElementById('resultName').textContent = state.studentName;
-                document.getElementById('resultCorrect').textContent = correct;
-                document.getElementById('resultIncorrect').textContent = incorrect;
 
+                // Build answers payload (compact)
+                const answersPayload = state.questions.map( (q, i) => ({
+                    q: q.q,
+                    a: state.answers[i] || null,
+                    c: q.a,
+                    ok: state.answers[i] === q.a
+                }));
+
+                // Show results
+                const grade = gradeLabel(pct);
+                S('finalScore').textContent = `${pct}%`;
+                S('gradeLabel').textContent = grade.text;
+                S('gradeLabel').style.color = grade.color;
+                S('resName').textContent = state.studentName;
+                S('resCollege').textContent = state.studentCollege;
+                S('resCorrect').textContent = correct;
+                S('resIncorrect').textContent = incorrect;
                 saveHistory(pct, correct);
+                show(screens.result);
 
-                el.exam.classList.remove('active');
-                el.result.classList.add('active');
+                // Send to backend (non-blocking)
+                sendToBackend({
+                    name: state.studentName,
+                    college: state.studentCollege,
+                    email: state.studentEmail,
+                    score: pct,
+                    correct,
+                    incorrect,
+                    total: state.questions.length,
+
+                    answers: answersPayload,
+                    timestamp: new Date().toISOString()
+                });
             }
 
+            // ─── FIRESTORE SUBMIT ────────────────────────────────────────────────────────
+            async function sendToBackend(data) {
+                try {
+                    if (typeof firebase === 'undefined' || !firebase.apps.length) {
+                        toast('⚠ Firebase not configured — saved locally only', 'var(--warning)');
+                        return;
+                    }
+                    const db = firebase.firestore();
+                    await db.collection('submissions').add({
+                        ...data,
+                        serverTime: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    toast('✓ نتيجتك سُجّلت بنجاح — Result recorded');
+                } catch (err) {
+                    console.error('Firestore error:', err);
+                    toast('⚠ Could not save to cloud — saved locally', 'var(--warning)');
+                }
+            }
+
+            // ─── LOCAL HISTORY ───────────────────────────────────────────────────────────
             function saveHistory(pct, correct) {
                 let h = JSON.parse(localStorage.getItem('netSecHistory') || '[]');
                 h.unshift({
-                    date: new Date().toLocaleDateString(),
+                    date: new Date().toLocaleDateString('ar-IQ'),
                     name: state.studentName,
+                    college: state.studentCollege,
                     pct: pct + '%',
                     score: `${correct}/${state.questions.length}`
                 });
-                if (h.length > 5)
-                    h.pop();
+                if (h.length > 10)
+                    h = h.slice(0, 10);
                 localStorage.setItem('netSecHistory', JSON.stringify(h));
 
-                const hc = document.getElementById('historyContainer');
-                hc.innerHTML = h.map(item => `
-        <div class="history-item">
-          <span><strong>${item.name}</strong> (${item.date})</span>
-          <span style="color:var(--neon-green)">${item.pct} [${item.score}]</span>
+                S('historyContainer').innerHTML = h.length === 0 ? '<p style="color:var(--text-muted);text-align:center;">لا توجد محاولات سابقة</p>' : h.map(it => `
+      <div class="history-item">
+        <div><strong style="color:var(--neon-blue)">${it.name}</strong><br>
+          <span style="color:var(--text-muted);font-size:12px;">${it.college} · ${it.date}</span></div>
+        <div style="text-align:right">
+          <span style="color:var(--neon-green);font-weight:700;">${it.pct}</span>
+          <span style="color:var(--text-muted);font-size:12px;display:block;">${it.score}</span>
         </div>
-      `).join('');
+      </div>`).join('');
             }
 
-            document.getElementById('retryBtn').onclick = () => {
-                el.result.classList.remove('active');
-                el.startBtn.click();
+            // ─── RETRY / LOGOUT ──────────────────────────────────────────────────────────
+            S('retryBtn').onclick = () => {
+                show(screens.login);
             }
             ;
-            document.getElementById('logoutBtn').onclick = () => {
+            S('logoutBtn').onclick = () => {
                 window.location.reload();
             }
             ;
 
-            // Load history on init
+            // Init history on load
             saveHistory(0, 0);
-            document.getElementById('historyContainer').innerHTML = '';
-            saveHistory();
+            S('historyContainer').innerHTML = '';
+            const h0 = JSON.parse(localStorage.getItem('netSecHistory') || '[]');
+            if (h0.length)
+                saveHistory.__proto__ && void 0;
+            // no-op; let saveHistory render on submit
+
+            // Rehydrate history display on load
+            (function initHistory() {
+                const h = JSON.parse(localStorage.getItem('netSecHistory') || '[]');
+                S('historyContainer').innerHTML = h.length === 0 ? '' : h.map(it => `
+      <div class="history-item">
+        <div><strong style="color:var(--neon-blue)">${it.name}</strong><br>
+          <span style="color:var(--text-muted);font-size:12px;">${it.college || ''} · ${it.date}</span></div>
+        <div style="text-align:right">
+          <span style="color:var(--neon-green);font-weight:700;">${it.pct}</span>
+          <span style="color:var(--text-muted);font-size:12px;display:block;">${it.score}</span>
+        </div>
+      </div>`).join('');
+            }
+            )();
         </script>
     </body>
 </html>
